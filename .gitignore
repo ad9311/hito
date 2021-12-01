@@ -3,13 +3,9 @@
 # Files not meant to be committed.
 tmp/
 
-# Linter configuration files.
-.stylelintrc.json
-.eslintrc.json
-
-# Node Modules
+# Node Modules.
 node_modules/
 package-lock.json
 
-# Unnecessary build files
+# Unnecessary build files.
 web/static/js/index.html
