@@ -13,6 +13,7 @@ const (
 	logout = "/logout"
 
 	apiLandmarks = "/api/v1/landmarks"
+	users        = "/api/v1/users"
 )
 
 func routes() http.Handler {
@@ -29,6 +30,7 @@ func routes() http.Handler {
 	mux.Get(logout, handler.Logout)
 
 	mux.Get(apiLandmarks, handler.Landmarks)
+	mux.Get(users, handler.Users)
 
 	fileServer := http.FileServer(http.Dir("./web/static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static/", fileServer))

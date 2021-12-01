@@ -19,6 +19,12 @@ type User struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
+// UserSlice holds multiple users.
+type UserSlice struct {
+	Entries []User `json:"data"`
+	Message string `json:"message"`
+}
+
 // LandmarkSlice holds multiple landmarks.
 type LandmarkSlice struct {
 	Entries []Landmark `json:"data"`
@@ -73,6 +79,15 @@ func ValidateAdmin(r *http.Request, currentUser string) error {
 		return fmt.Errorf("user %s is not an administrator user", currentUser)
 	}
 
+	return nil
+}
+
+// ValidateBodyForUsers validates that the body sent contains the required data.
+func ValidateBodyForUsers(r *http.Request) error {
+	// required := []string{"username", "csfr-token"}
+	// for _, v := range required {
+
+	// }
 	return nil
 }
 

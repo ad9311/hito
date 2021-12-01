@@ -154,6 +154,38 @@ func (d *DB) DeleteUser(id int) error {
 	return nil
 }
 
+// GetUser returns a selected user by their id.
+func (d *DB) GetUser(username string) (dbmodel.UserSlice, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	us := dbmodel.UserSlice{}
+	u := dbmodel.User{}
+	query := `select "name",username,admin,last_login,
+	created_at,updated_at from users where username=$1`
+
+	row := d.SQL.QueryRowContext(ctx, query, username)
+	err := row.Scan(
+		&u.Name,
+		&u.Username,
+		&u.Admin,
+		&u.LastLogin,
+		&u.CreatedAt,
+		&u.UpdatedAt,
+	)
+	if err != nil {
+		err2 := fmt.Errorf("could not find user %s", username)
+		us.Message = err2.Error()
+		console.AssertError(err)
+		return us, err2
+	}
+
+	us.Message = "success"
+	us.Entries = append(us.Entries, u)
+
+	return us, nil
+}
+
 // GetAllLandmarks returns all the landmarks in the database.
 func (d *DB) GetAllLandmarks() (dbmodel.LandmarkSlice, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
