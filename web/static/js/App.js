@@ -1,9 +1,12 @@
 import React from 'react';
+import UserPanel from './components/UserPanel';
 
 const App = () => (
-  <main>
-    <h1>HITO</h1>
-  </main>
+  <div>
+    <UserPanel />
+    <main>
+    </main>
+  </div>
 );
 
 export default App;
