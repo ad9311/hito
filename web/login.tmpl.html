@@ -1,0 +1,22 @@
+{{template "index" .}}
+{{define "content"}}
+<main>
+  <div>
+    <h1>HITO</h1>
+  </div>
+  <div>
+    <form action="/login" method="post">
+      <input type="hidden" name="csrf_token" value="{{.CSRFToken}}"/>
+      <label for="username">
+        <input type="text" name="username" placeholder="Username"/>
+      </label>
+      <label for="password">
+        <input type="password" name="password" placeholder="Password"/>
+      </label>
+      <label for="login-submit">
+        <input type="submit" value="Login"/>
+      </label>
+    </form>
+  </div>
+</main>
+{{end}}
