@@ -1,6 +1,7 @@
 package dbmodel
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -82,12 +83,33 @@ func ValidateAdmin(r *http.Request, currentUser string) error {
 	return nil
 }
 
-// ValidateBodyForUsers validates that the body sent contains the required data.
-func ValidateBodyForUsers(r *http.Request) error {
-	// required := []string{"username", "csfr-token"}
-	// for _, v := range required {
+// ValidateBodyForSingleUsers validates that the body sent contains the required data.
+func ValidateBodyForSingleUsers(r *http.Request, username, csrfToken string) error {
+	type required struct {
+		Username  string `json:"username"`
+		CSRFToken string `json:"csrf-token"`
+	}
+	req := required{}
+	var unmarshalErr *json.UnmarshalTypeError
 
-	// }
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&req)
+	if err != nil {
+		if errors.As(err, &unmarshalErr) {
+			return errors.New("could not process request. Wrong data type provided")
+		}
+		return errors.New("could not process request")
+	}
+
+	if username != req.Username {
+		return fmt.Errorf("user %s is not current user or is not logged-in", username)
+	}
+
+	if csrfToken != req.CSRFToken {
+		return errors.New("CSRFToken is not valid")
+	}
+
 	return nil
 }
 

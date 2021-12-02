@@ -5,6 +5,7 @@ import (
 
 	"github.com/ad9311/hito/internal/handler"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 )
 
 const (
@@ -13,13 +14,13 @@ const (
 	logout = "/logout"
 
 	apiLandmarks = "/api/v1/landmarks"
-	users        = "/api/v1/users"
+	users        = "/users"
 )
 
 func routes() http.Handler {
 	mux := chi.NewRouter()
 
-	// mux.Use(middleware.Recoverer)
+	mux.Use(middleware.Recoverer)
 	mux.Use(sessionsLoad)
 	mux.Use(newCsrf)
 
@@ -30,7 +31,7 @@ func routes() http.Handler {
 	mux.Get(logout, handler.Logout)
 
 	mux.Get(apiLandmarks, handler.Landmarks)
-	mux.Get(users, handler.Users)
+	mux.Post(users, handler.PostUsers)
 
 	fileServer := http.FileServer(http.Dir("./web/static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static/", fileServer))

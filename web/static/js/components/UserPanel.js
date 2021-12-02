@@ -23,7 +23,7 @@ const UserPanel = () => {
     <header className="user-panel">
       <div>
         <h1>HITO</h1>
-        <h2>`Welcome ${currentUser.name}`</h2>
+        <h2>{`Welcome ${currentUser.name}`}</h2>
       </div>
       <div>
         <h3>Username</h3>
