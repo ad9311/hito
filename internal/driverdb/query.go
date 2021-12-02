@@ -161,11 +161,12 @@ func (d *DB) GetUser(username string) (dbmodel.UserSlice, error) {
 
 	us := dbmodel.UserSlice{}
 	u := dbmodel.User{}
-	query := `select "name",username,admin,last_login,
+	query := `select id, "name",username,admin,last_login,
 	created_at,updated_at from users where username = $1`
 
 	row := d.SQL.QueryRowContext(ctx, query, username)
 	err := row.Scan(
+		&u.ID,
 		&u.Name,
 		&u.Username,
 		&u.Admin,

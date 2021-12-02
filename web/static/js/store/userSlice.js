@@ -12,7 +12,7 @@ const initialState = {
 
 
 export const fetchCurrentUser = createAsyncThunk(FETCH_CURRENT_USER, async (body) => {
-  return await fetchAPI('POST', 'current-user', body);
+  return await fetchAPI('POST', 'users', body);
 });
 
 

@@ -17,7 +17,7 @@ const UserPanel = () => {
         userDataCon.remove;
       } 
     }
-  }, [userSet])
+  }, [])
 
   return (
     <header className="user-panel">
@@ -26,13 +26,13 @@ const UserPanel = () => {
         <h2>{`Welcome ${currentUser.name}`}</h2>
       </div>
       <div>
-        <h3>Username</h3>
-        <p>Admin</p>
+        <h3>{currentUser.username}</h3>
+        <p>{currentUser.admin ? 'Administrator user' : 'Standard user'}</p>
       </div>
       <div>
-        <p>Last login</p>
-        <p>Last Update</p>
-        <p>First Created</p>
+        <p>{`Last login: ${new Date(currentUser.lastLogin).toLocaleString()}`}</p>
+        <p>{`Updated at: ${new Date(currentUser.updatedAt).toLocaleString()}`}</p>
+        <p>{`Created at: ${new Date(currentUser.createdAt).toLocaleString()}`}</p>
       </div>
       <div className="user-actions-con">
         <button type="button">Edit</button>

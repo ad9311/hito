@@ -14,7 +14,7 @@ const (
 	logout = "/logout"
 
 	apiLandmarks = "/api/v1/landmarks"
-	users        = "/users"
+	users        = "/api/v1/users"
 )
 
 func routes() http.Handler {

@@ -14,6 +14,7 @@ func newCsrf(next http.Handler) http.Handler {
 		Secure:   config.Production,
 		SameSite: http.SameSiteLaxMode,
 	})
+	csrfHandler.ExemptPath(users)
 	return csrfHandler
 }
 
