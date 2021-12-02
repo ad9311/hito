@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime';
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import fetchAPI from './fetchAPI';
 
 const FETCH_CURRENT_USER = 'cars/fetchCurrentUser';
@@ -10,10 +10,10 @@ const initialState = {
 };
 
 
-
-export const fetchCurrentUser = createAsyncThunk(FETCH_CURRENT_USER, async (body) => {
-  return await fetchAPI('POST', 'users', body);
-});
+export const fetchCurrentUser = createAsyncThunk(
+    FETCH_CURRENT_USER, async (body) => {
+      return await fetchAPI('POST', 'users', body);
+    });
 
 
 const userSlice = createSlice({
@@ -23,10 +23,10 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCurrentUser.fulfilled, (_state, action) => ({
-        userSet: true,
-        currentUser: {...action.payload.data[0]}
-      }))
+        .addCase(fetchCurrentUser.fulfilled, (_state, action) => ({
+          userSet: true,
+          currentUser: {...action.payload.data[0]},
+        }));
   },
 });
 

@@ -1,10 +1,16 @@
 import React from 'react';
-import UserPanel from './components/UserPanel';
+import UserPanel from './components/users/UserPanel';
+import LandmarkPanel from './components/landmarks/LandmarkPanel';
+import LandmarkDetail from './components/landmarks/LandmarkDetail';
 
 const App = () => (
   <div>
     <UserPanel />
     <main>
+      <div>
+        <LandmarkPanel />
+        <LandmarkDetail />
+      </div>
     </main>
   </div>
 );

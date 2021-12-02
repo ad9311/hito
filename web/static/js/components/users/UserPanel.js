@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCurrentUser } from '../store/userSlice';
+import React, {useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchCurrentUser} from '../../store/userSlice';
 
 const UserPanel = () => {
   const dispatch = useDispatch();
@@ -10,14 +10,14 @@ const UserPanel = () => {
       const userDataCon = document.getElementById('user-data');
       if (userDataCon !== null) {
         const body = {
-          username: userDataCon.children[0].innerHTML,
+          'username': userDataCon.children[0].innerHTML,
           'csrf-token': userDataCon.children[1].innerHTML,
-        }
+        };
         dispatch(fetchCurrentUser(body));
         userDataCon.remove;
-      } 
+      }
     }
-  }, [])
+  }, []);
 
   return (
     <header className="user-panel">
@@ -30,9 +30,15 @@ const UserPanel = () => {
         <p>{currentUser.admin ? 'Administrator user' : 'Standard user'}</p>
       </div>
       <div>
-        <p>{`Last login: ${new Date(currentUser.lastLogin).toLocaleString()}`}</p>
-        <p>{`Updated at: ${new Date(currentUser.updatedAt).toLocaleString()}`}</p>
-        <p>{`Created at: ${new Date(currentUser.createdAt).toLocaleString()}`}</p>
+        <p>
+          {`Last login: ${new Date(currentUser.lastLogin).toLocaleString()}`}
+        </p>
+        <p>
+          {`Updated at: ${new Date(currentUser.updatedAt).toLocaleString()}`}
+        </p>
+        <p>
+          {`Created at: ${new Date(currentUser.createdAt).toLocaleString()}`}
+        </p>
       </div>
       <div className="user-actions-con">
         <button type="button">Edit</button>
@@ -40,6 +46,6 @@ const UserPanel = () => {
       </div>
     </header>
   );
-}
+};
 
 export default UserPanel;

@@ -9,7 +9,7 @@ const fetchAPI = async (method, endPoint, body = null) => {
   const request = await fetch(`http://localhost:3000/api/v1/${endPoint}`, {
     method,
     headers: {
-      Accept: 'application/json; charset=utf-8',
+      'Accept': 'application/json; charset=utf-8',
       'Content-Type': 'application/json; charset=utf-8',
     },
     body: optionalBody(body),

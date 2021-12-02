@@ -10,11 +10,11 @@ const homeRoot = document.getElementById('root');
 
 if (homeRoot !== null) {
   ReactDOM.render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </React.StrictMode>,
-    document.getElementById('root'),
+      <React.StrictMode>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </React.StrictMode>,
+      document.getElementById('root'),
   );
 }
