@@ -1,6 +1,7 @@
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {closeForm, newForm} from '../../store/formsSlice';
+import DeleteForm from './DeleteForm';
 import LandmarkForm from './LandmarkForm';
 import UserForm from './UserForm';
 
@@ -40,7 +41,7 @@ const Forms = () => {
         );
       case 'DELETE':
         return (
-          <p>Delete</p>
+          <DeleteForm />
         );
       default:
         return '';
