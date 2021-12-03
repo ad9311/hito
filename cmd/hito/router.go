@@ -20,12 +20,14 @@ const (
 func routes() http.Handler {
 	mux := chi.NewRouter()
 
+	mux.Use(middleware.Logger)
 	mux.Use(middleware.Recoverer)
 	mux.Use(sessionsLoad)
 	mux.Use(newCsrf)
 
 	mux.Get(home, handler.Home)
 	mux.Post(home, handler.PostHome)
+
 	mux.Get(login, handler.Login)
 	mux.Post(login, handler.PostLogin)
 	mux.Get(logout, handler.Logout)

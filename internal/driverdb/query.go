@@ -11,6 +11,29 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// UpdateLastLogin updates the currently logged-in user's last login date.
+func (d *DB) UpdateLastLogin(u *User) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	posErr := fmt.Errorf("could not update last login for user %s", u.Username)
+	query := "update users set last_login = $1 where id = $2"
+	dt, err := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	if err != nil {
+		console.AssertError(err)
+		return posErr
+	}
+
+	_, err = d.SQL.ExecContext(ctx, query, dt, u.ID)
+	if err != nil {
+		console.AssertError(err)
+		return posErr
+	}
+	u.LastLogin = dt
+
+	return nil
+}
+
 // GetLandmarks returns all the landmarks in the database.
 func (d *DB) GetLandmarks() (LandmarkSlice, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -122,27 +145,20 @@ func (d *DB) getUserByUsername(username string) (User, error) {
 	return u, nil
 }
 
-// UpdateLastLogin updates the currently logged-in user's last login date.
-func (d *DB) UpdateLastLogin(u *User) error {
+func (d *DB) getUserPasswordByUsername(username string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	posErr := fmt.Errorf("could not update last login for user %s", u.Username)
-	query := "update users set last_login = $1 where id = $2"
-	dt, err := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	if err != nil {
-		console.AssertError(err)
-		return posErr
-	}
+	var password string
+	query := `select password from users where username = $1`
 
-	_, err = d.SQL.ExecContext(ctx, query, dt, u.ID)
-	if err != nil {
-		console.AssertError(err)
-		return posErr
-	}
-	u.LastLogin = dt
+	row := d.SQL.QueryRowContext(ctx, query, username)
+	err := row.Scan(&password)
 
-	return nil
+	if err != nil {
+		return password, err
+	}
+	return password, nil
 }
 
 func (d *DB) addUserToDB(r *http.Request) error {
@@ -177,6 +193,43 @@ func (d *DB) addUserToDB(r *http.Request) error {
 		"0001-01-01 01:00:00",
 		dt,
 		dt,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *DB) editDBUser(r *http.Request) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	dt, errDt := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	if errDt != nil {
+		console.AssertError(errDt)
+	}
+
+	hashPassword, err := bcrypt.GenerateFromPassword(
+		[]byte(r.PostFormValue("new-password")),
+		bcrypt.DefaultCost,
+	)
+	if err != nil {
+		return err
+	}
+
+	query := `update users set "name"=$1,
+	username=$2,password=$3,updated_at=$4 where username=$5`
+
+	_, err = d.SQL.ExecContext(
+		ctx,
+		query,
+		r.PostFormValue("name"),
+		r.PostFormValue("username"),
+		hashPassword,
+		dt,
+		r.PostFormValue("current-user"),
 	)
 
 	if err != nil {

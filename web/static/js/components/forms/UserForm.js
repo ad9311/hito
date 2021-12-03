@@ -6,7 +6,7 @@ const UserForm = () => {
   const {onNew} = useSelector((state) => state.forms);
 
   return (
-    <form action="/" method={onNew ? 'post' : 'patch'}>
+    <form action="/" method="post">
       <input type="hidden" name="csrf_token" value={csrfToken} />
       <input type="hidden" name="mode" value={onNew ? 'new' : 'edit'} />
       <input
@@ -69,9 +69,9 @@ const UserForm = () => {
           <div>
             <input
               type="password"
-              id="old-password"
-              name="old-password"
-              placeholder="Old Password"
+              id="current-password"
+              name="current-password"
+              placeholder="Current Password"
             />
             <input
               type="password"
@@ -81,8 +81,8 @@ const UserForm = () => {
             />
             <input
               type="password"
-              id="password-confirmation"
-              name="password-confirmation"
+              id="new-password-confirmation"
+              name="new-password-confirmation"
               placeholder="Password Confirmation"
             />
           </div>

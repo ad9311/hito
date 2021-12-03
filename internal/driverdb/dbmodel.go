@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/ad9311/hito/internal/console"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // User holds data for a selected user.
@@ -118,6 +119,61 @@ func (d *DB) CreateUser(r *http.Request, u User) error {
 	return nil
 }
 
+// EditUser verify a post request form and creates a new user if valid.
+func (d *DB) EditUser(r *http.Request, u User) error {
+	err := validateCurrentUser(r, u)
+	if err != nil {
+		console.AssertError(err)
+		return err
+	}
+
+	missingErr := errors.New("one or more requiered fields are missing")
+	failedErr := fmt.Errorf("could not edit user %s", r.PostFormValue("username"))
+	currPasswdMismatch := errors.New("incorrent current password")
+	passMismatch := errors.New("new passwords mismatch")
+	required := []string{
+		"name",
+		"username",
+		"current-password",
+		"new-password",
+		"new-password-confirmation",
+	}
+
+	for _, v := range required {
+		if r.PostFormValue(v) == "" {
+			fmt.Println(v)
+			return missingErr
+		}
+	}
+
+	currentPassword, err := d.getUserPasswordByUsername(u.Username)
+	if err != nil {
+		return failedErr
+	}
+
+	err = bcrypt.CompareHashAndPassword(
+		[]byte(currentPassword),
+		[]byte(r.PostFormValue("current-password")),
+	)
+	if err != nil {
+		return currPasswdMismatch
+	}
+
+	newPassword := r.PostFormValue("new-password")
+	newPassConfirm := r.PostFormValue("new-password-confirmation")
+	if newPassword != newPassConfirm {
+		return passMismatch
+	}
+
+	err = d.editDBUser(r)
+	if err != nil {
+		console.AssertError(err)
+		return failedErr
+	}
+
+	return nil
+}
+
 // GetUser validates request's origin and returns a slice of users with a single entry
 // being that the current user.
 func (d *DB) GetUser(r *http.Request, username, csrfToken string) (UserSlice, error) {
@@ -171,6 +227,16 @@ func validateAdmin(r *http.Request, u User) error {
 
 	if !u.Admin {
 		return fmt.Errorf("user %s is not an administrator user", u.Username)
+	}
+
+	return nil
+}
+
+func validateCurrentUser(r *http.Request, u User) error {
+	formUsername := r.PostFormValue("current-user")
+	errS := "is not allowed to perform this action as user"
+	if formUsername != u.Username {
+		return fmt.Errorf("user %s %s %s", formUsername, errS, u.Username)
 	}
 
 	return nil
