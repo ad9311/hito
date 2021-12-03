@@ -6,9 +6,14 @@ const UserForm = () => {
   const {onNew} = useSelector((state) => state.forms);
 
   return (
-    <form action="/" method="post">
-      <input type="hidden" name="username" value={currentUser.username} />
+    <form action="/" method={onNew ? 'post' : 'patch'}>
       <input type="hidden" name="csrf_token" value={csrfToken} />
+      <input type="hidden" name="mode" value={onNew ? 'new' : 'edit'} />
+      <input
+        type="hidden"
+        name="current-username"
+        value={currentUser.username}
+      />
       <label name="name" htmlFor="name">
         {onNew ?
           <input
@@ -55,41 +60,57 @@ const UserForm = () => {
               placeholder="Password"
             />
             <input
-              type="password-confirmation"
+              type="password"
               id="password-confirmation"
-              name="password confirmation"
+              name="password-confirmation"
               placeholder="Password Confirmation"
             />
           </div> :
           <div>
             <input
-              type="old-password"
+              type="password"
               id="old-password"
               name="old-password"
               placeholder="Old Password"
             />
             <input
-              type="new-password"
+              type="password"
               id="new-password"
               name="new-password"
               placeholder="New Password"
             />
             <input
-              type="password-confirmation"
+              type="password"
               id="password-confirmation"
-              name="password confirmation"
+              name="password-confirmation"
               placeholder="Password Confirmation"
             />
           </div>
         }
       </label>
-      <label name="admin" htmlFor="admin">
-        Admin
-        {onNew ?
-          <input type="checkbox" name="admin" value="Admin" checked="false" /> :
-          <input type="checkbox" name="admin" value="Admin" checked readOnly />
-        }
-      </label>
+      {onNew &&
+        <fieldset>
+          <label name="no-admin" htmlFor="no-admin">
+            <input
+              type="radio"
+              value="false"
+              name="admin"
+              id="no-admin"
+              checked
+            />
+            Standard User
+          </label>
+          <label name="admin" htmlFor="admin">
+            <input
+              type="radio"
+              value="true"
+              name="admin"
+              id="admin"
+            />
+            Admin
+          </label>
+        </fieldset>
+      }
       <input type="submit" value="Submit" />
     </form>
   );

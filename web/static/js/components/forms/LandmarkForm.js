@@ -7,7 +7,7 @@ const LandmarkForm = () => {
   const {onNew} = useSelector((state) => state.forms);
 
   return (
-    <form action="/" method="post">
+    <form action="/" method={onNew ? 'post' : 'patch'}>
       <input type="hidden" name="username" value={currentUser.username} />
       <input type="hidden" name="csrf_token" value={csrfToken} />
       <label name="name" htmlFor="name">

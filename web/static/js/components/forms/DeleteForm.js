@@ -10,7 +10,13 @@ const DeleteForm = () => {
     <form action="/" method="delete">
       <input type="hidden" name="username" value={currentUser.username} />
       <input type="hidden" name="csrf_token" value={csrfToken} />
-      {onDeleteLm && <input type="hidden" name="landmark" value={selectedLm.id} />}
+      {onDeleteLm &&
+        <input
+          type="hidden"
+          name="landmark"
+          value={selectedLm.id}
+        />
+      }
       <label name="username" htmlFor="username">
         <input
           type="text"
@@ -29,7 +35,7 @@ const DeleteForm = () => {
       </label>
       <input type="submit" value="Submit" />
     </form>
-  )
+  );
 };
 
 export default DeleteForm;

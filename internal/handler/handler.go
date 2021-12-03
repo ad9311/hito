@@ -5,7 +5,7 @@ import (
 
 	"github.com/ad9311/hito/internal/app"
 	"github.com/ad9311/hito/internal/console"
-	"github.com/ad9311/hito/internal/dbmodel"
+	"github.com/ad9311/hito/internal/driverdb"
 	"github.com/justinas/nosurf"
 )
 
@@ -50,30 +50,13 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
 	_ = config.Session.RenewToken(r.Context())
 	err := r.ParseForm()
 	console.AssertError(err)
-	err = dbmodel.ValidateLoginForm(r)
-	if err != nil {
-		console.AssertError(err)
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-	}
-	username := r.PostFormValue("username")
-	password := r.PostFormValue("password")
-	data.CurrentUser, err = config.ConnDB.ValidateLogin(username, password)
-	if err != nil {
-		console.AssertError(err)
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-	} else {
-		config.Session.Put(r.Context(), "loggedIn", true)
-		err = config.ConnDB.UpdateLastLogin(&data.CurrentUser)
-		console.AssertError(err)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
 }
 
 // Logout handles the logout action.
 func Logout(w http.ResponseWriter, r *http.Request) {
 	_ = config.Session.Destroy(r.Context())
 	_ = config.Session.RenewToken(r.Context())
-	data.CurrentUser = dbmodel.User{}
+	data.CurrentUser = driverdb.User{}
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 

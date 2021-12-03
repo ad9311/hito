@@ -1,11 +1,10 @@
-package dbmodel
+package driverdb
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -69,21 +68,57 @@ func ValidateLoginForm(r *http.Request) error {
 
 // ValidateAdmin validates that a user's requests are from an administrator user
 // and that the currently logged-in user is the actual sender.
-func ValidateAdmin(r *http.Request, currentUser string) error {
-	formUser := r.PostFormValue("current-user")
-	if formUser != currentUser {
-		return fmt.Errorf("user %s is not allowed to perform this action as user %s", formUser, currentUser)
+func ValidateAdmin(r *http.Request, currentUser User) error {
+	formUsername := r.PostFormValue("current-user")
+	if formUsername != currentUser.Username {
+		return fmt.Errorf("user %s is not allowed to perform this action as user %s", formUsername, currentUser.Username)
 	}
 
-	admin, err := strconv.ParseBool(r.PostFormValue("admin"))
-	if err != nil || !admin {
-		return fmt.Errorf("user %s is not an administrator user", currentUser)
+	if !currentUser.Admin {
+		return fmt.Errorf("user %s is not an administrator user", currentUser.Username)
 	}
 
 	return nil
 }
 
-// ValidateBodyForSingleUsers validates that the body sent contains the required data.
+// ValidateAddUser validates the required fields for adding a user are present.
+func ValidateAddUser(r *http.Request, currentUser User) (User, error) {
+	u := User{}
+	// required := []string{"name", "username", "password", "password-confirmation", "admin"}
+	// posError := "one or more requiered fields are missing"
+	// passMismatch := "passwords mismatch"
+
+	// err := ValidateAdmin(r, currentUser)
+	// if err != nil {
+	// 	return u, err
+	// }
+
+	// for _, v := range required {
+	// 	if r.PostFormValue(v) == "" {
+	// 		return u, errors.New(posError)
+	// 	}
+	// }
+
+	// password := r.PostFormValue("password")
+	// passConfirm := r.PostFormValue("password-confirmation")
+
+	// if password != passConfirm {
+	// 	return u, errors.New(passMismatch)
+	// }
+
+	// u.Name = r.PostFormValue("name")
+	// u.Username = r.PostFormValue("username")
+	// admin, err := strconv.ParseBool(r.PostFormValue("admin"))
+	// if err != nil {
+	// 	return User{}, errors.New("could not process user's privilages")
+	// }
+	// u.Admin = admin
+	// u.Password = password
+
+	return u, nil
+}
+
+// ValidateBodyForSingleUsers validates that the ajax request's body sent contains the required data.
 func ValidateBodyForSingleUsers(r *http.Request, username, csrfToken string) error {
 	type required struct {
 		Username  string `json:"username"`
@@ -115,44 +150,44 @@ func ValidateBodyForSingleUsers(r *http.Request, username, csrfToken string) err
 
 // ValidateNewOrEditLandmark validates that all required fields are present
 // for creating or editing a landmark.
-func ValidateNewOrEditLandmark(r *http.Request) (Landmark, error) {
-	required := []string{
-		"id",
-		"name",
-		"native-name",
-		"type",
-		"description",
-		"continent",
-		"country",
-		"city",
-		"latitude",
-		"longitude",
-		"start-year",
-		"end-year",
-		"length",
-		"width",
-		"height",
-		"wiki-url",
-		"img-url",
-		"user-id",
-	}
+// func ValidateNewOrEditLandmark(r *http.Request) (Landmark, error) {
+// 	required := []string{
+// 		"id",
+// 		"name",
+// 		"native-name",
+// 		"type",
+// 		"description",
+// 		"continent",
+// 		"country",
+// 		"city",
+// 		"latitude",
+// 		"longitude",
+// 		"start-year",
+// 		"end-year",
+// 		"length",
+// 		"width",
+// 		"height",
+// 		"wiki-url",
+// 		"img-url",
+// 		"user-id",
+// 	}
 
-	posError := "one or more requiered fields are missing"
-	lm := Landmark{}
+// 	posError := "one or more requiered fields are missing"
+// 	lm := Landmark{}
 
-	for _, v := range required {
-		if r.PostFormValue("mode") == "new" {
-			if r.PostFormValue(v) != "" && r.PostFormValue(v) != "id" {
-				return lm, errors.New(posError)
-			}
-		} else if r.PostFormValue("mode") == "edit" {
-			if r.PostFormValue(v) != "" && r.PostFormValue(v) != "user-id" {
-				return lm, errors.New(posError)
-			}
-		} else {
-			return lm, errors.New("could not process form. Wrong format")
-		}
-	}
+// 	for _, v := range required {
+// 		if r.PostFormValue("mode") == "new" {
+// 			if r.PostFormValue(v) != "" && r.PostFormValue(v) != "id" {
+// 				return lm, errors.New(posError)
+// 			}
+// 		} else if r.PostFormValue("mode") == "edit" {
+// 			if r.PostFormValue(v) != "" && r.PostFormValue(v) != "user-id" {
+// 				return lm, errors.New(posError)
+// 			}
+// 		} else {
+// 			return lm, errors.New("could not process form. Wrong format")
+// 		}
+// 	}
 
-	return lm, nil
-}
+// 	return lm, nil
+// }
