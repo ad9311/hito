@@ -4,7 +4,7 @@ import {deleteForm, editForm} from '../../store/formsSlice';
 
 const LandmarkDetail = () => {
   const dispatch = useDispatch();
-  const {type, onEdit, onDelete} = useSelector((state) => state.forms); 
+  const {type, onEdit, onDelete} = useSelector((state) => state.forms);
   const {
     selectedLmStatus,
     selectedLm,

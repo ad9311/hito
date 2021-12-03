@@ -6,7 +6,7 @@ import {deleteForm, editForm} from '../../store/formsSlice';
 const UserPanel = () => {
   const dispatch = useDispatch();
   const {userSet, currentUser} = useSelector((state) => state.users);
-  const {type, onEdit, onDelete} = useSelector((state) => state.forms); 
+  const {type, onEdit, onDelete} = useSelector((state) => state.forms);
   useEffect(() => {
     if (!userSet) {
       const userDataCon = document.getElementById('user-data');

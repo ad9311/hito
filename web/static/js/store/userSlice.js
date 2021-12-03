@@ -2,17 +2,23 @@ import 'regenerator-runtime/runtime';
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import fetchAPI from './fetchAPI';
 
-const FETCH_CURRENT_USER = 'cars/fetchCurrentUser';
+const FETCH_CURRENT_USER = 'users/fetchCurrentUser';
 
 const initialState = {
   userSet: false,
   currentUser: {},
+  csrfToken: '',
 };
 
 
 export const fetchCurrentUser = createAsyncThunk(
     FETCH_CURRENT_USER, async (body) => {
-      return await fetchAPI('POST', 'users', body);
+      const response = await fetchAPI('POST', 'users', body);
+      const newState = {
+        csrfToken: body['csrf-token'],
+        currentUser: response.data[0],
+      };
+      return newState;
     });
 
 
@@ -25,7 +31,8 @@ const userSlice = createSlice({
     builder
         .addCase(fetchCurrentUser.fulfilled, (_state, action) => ({
           userSet: true,
-          currentUser: {...action.payload.data[0]},
+          currentUser: action.payload.currentUser,
+          csrfToken: action.payload.csrfToken,
         }));
   },
 });

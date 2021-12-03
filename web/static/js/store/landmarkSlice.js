@@ -2,7 +2,7 @@ import 'regenerator-runtime/runtime';
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import fetchAPI from './fetchAPI';
 
-const FETCH_LANDMARKS = 'cars/fetchLandmarks';
+const FETCH_LANDMARKS = 'landmarks/fetchLandmarks';
 
 const initialState = {
   landmarksStatus: false,
