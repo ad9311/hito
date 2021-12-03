@@ -10,9 +10,9 @@ const LandmarkDetail = () => {
   const detail = () => (
     <article>
       <div>
-        <div>
-          <img src={selectedLm.imgURL} alt={selectedLm.name} />
-        </div>
+        <img src={selectedLm.imgURL} alt={selectedLm.name} />
+      </div>
+      <div>
         <h2>{selectedLm.name}</h2>
         <h3>{selectedLm.nativeName}</h3>
         <p>{selectedLm.type}</p>

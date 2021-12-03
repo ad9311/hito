@@ -20,7 +20,7 @@ const UserPanel = () => {
   }, []);
 
   return (
-    <header className="user-panel">
+    <header>
       <div>
         <h1>HITO</h1>
         <h2>{`Welcome ${currentUser.name}`}</h2>
@@ -40,7 +40,7 @@ const UserPanel = () => {
           {`Created at: ${new Date(currentUser.createdAt).toLocaleString()}`}
         </p>
       </div>
-      <div className="user-actions-con">
+      <div>
         <button type="button">Edit</button>
         <button type="button">Delete</button>
       </div>
