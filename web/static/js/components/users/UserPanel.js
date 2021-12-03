@@ -1,10 +1,12 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchCurrentUser} from '../../store/userSlice';
+import {deleteForm, editForm} from '../../store/formsSlice';
 
 const UserPanel = () => {
   const dispatch = useDispatch();
   const {userSet, currentUser} = useSelector((state) => state.users);
+  const {type, onEdit, onDelete} = useSelector((state) => state.forms); 
   useEffect(() => {
     if (!userSet) {
       const userDataCon = document.getElementById('user-data');
@@ -14,10 +16,21 @@ const UserPanel = () => {
           'csrf-token': userDataCon.children[1].innerHTML,
         };
         dispatch(fetchCurrentUser(body));
-        userDataCon.remove;
       }
     }
   }, []);
+
+  const formEditHandle = () => {
+    if (!onEdit || type !== 'USER') {
+      dispatch(editForm('USER'));
+    }
+  };
+
+  const formDeleteHandle = () => {
+    if (!onDelete || type !== 'USER') {
+      dispatch(deleteForm('USER'));
+    }
+  };
 
   return (
     <header className="user-panel">
@@ -41,8 +54,8 @@ const UserPanel = () => {
         </p>
       </div>
       <div>
-        <button type="button">Edit</button>
-        <button type="button">Delete</button>
+        <button type="button" onClick={formEditHandle}>Edit</button>
+        <button type="button" onClick={formDeleteHandle}>Delete</button>
       </div>
     </header>
   );

@@ -20,4 +20,6 @@ header {
 
 main {
   padding: 0 1rem;
+  display: flex;
+  align-content: stretch;
 }

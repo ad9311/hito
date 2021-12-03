@@ -1,11 +1,26 @@
 import React from 'react';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {deleteForm, editForm} from '../../store/formsSlice';
 
 const LandmarkDetail = () => {
+  const dispatch = useDispatch();
+  const {type, onEdit, onDelete} = useSelector((state) => state.forms); 
   const {
     selectedLmStatus,
     selectedLm,
   } = useSelector((state) => state.landmarks);
+
+  const formEditHandle = () => {
+    if (!onEdit || type !='LANDMARK') {
+      dispatch(editForm('LANDMARK'));
+    }
+  };
+
+  const formDeleteHandle = () => {
+    if (!onDelete || type != 'LANDMARK') {
+      dispatch(deleteForm('LANDMARK'));
+    }
+  };
 
   const detail = () => (
     <article className="landmark-detail">
@@ -60,8 +75,8 @@ const LandmarkDetail = () => {
         </table>
       </div>
       <div className="landmark-actions">
-        <button>Edit</button>
-        <button>Delete</button>
+        <button type="button" onClick={formEditHandle}>Edit</button>
+        <button type="button" onClick={formDeleteHandle}>Delete</button>
       </div>
     </article>
   );
