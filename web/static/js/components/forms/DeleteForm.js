@@ -7,7 +7,7 @@ const DeleteForm = () => {
   const {onDeleteLm} = useSelector((state) => state.forms);
 
   return (
-    <form action="/" method="delete">
+    <form action="/" method="post">
       <input type="hidden" name="csrf_token" value={csrfToken} />
       <input
         type="hidden"

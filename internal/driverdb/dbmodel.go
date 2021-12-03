@@ -216,6 +216,28 @@ func (d *DB) GetUser(r *http.Request, username, csrfToken string) (UserSlice, er
 	return us, nil
 }
 
+// DeleteUser deletes a user from the database.
+func (d *DB) DeleteUser(r *http.Request, u User) error {
+	err := validateCurrentUser(r, u)
+	if err != nil {
+		console.AssertError(err)
+		return err
+	}
+
+	cu, err := d.ValidateLogin(r)
+	if err != nil {
+		console.AssertError(err)
+		return err
+	}
+
+	err = d.deleteUserFromDB(cu)
+	if err != nil {
+		console.AssertError(err)
+		return fmt.Errorf("could not delete user %s", u.Username)
+	}
+	return nil
+}
+
 // Unexported functions
 
 func validateAdmin(r *http.Request, u User) error {

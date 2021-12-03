@@ -238,3 +238,16 @@ func (d *DB) editDBUser(r *http.Request) error {
 
 	return nil
 }
+
+func (d *DB) deleteUserFromDB(u User) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := "delete from users where username=$1"
+	_, err := d.SQL.ExecContext(ctx, query, u.Username)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
