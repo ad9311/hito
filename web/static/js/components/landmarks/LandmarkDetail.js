@@ -8,22 +8,24 @@ const LandmarkDetail = () => {
   } = useSelector((state) => state.landmarks);
 
   const detail = () => (
-    <article>
-      <div>
+    <article className="landmark-detail">
+      <div className="landmark-img">
         <img src={selectedLm.imgURL} alt={selectedLm.name} />
       </div>
-      <div>
+      <div className="landmark-description">
         <h2>{selectedLm.name}</h2>
         <h3>{selectedLm.nativeName}</h3>
-        <p>{selectedLm.type}</p>
+        <div className="wiki">
+          <h4>{selectedLm.type}</h4>
+          <a href={selectedLm.wikiURL}><button>Wikipedia</button></a>
+        </div>
         <p>{selectedLm.description}</p>
       </div>
-      <div>
-        <p>{selectedLm.continent}</p>
+      <div className="detail-con">
         <p>{selectedLm.country}</p>
         <p>{selectedLm.city}</p>
       </div>
-      <div>
+      <div className="detail-con">
         <table>
           <thead>
             <tr>
@@ -39,7 +41,7 @@ const LandmarkDetail = () => {
           </tbody>
         </table>
       </div>
-      <div>
+      <div className="detail-con">
         <table>
           <thead>
             <tr>
@@ -57,7 +59,7 @@ const LandmarkDetail = () => {
           </tbody>
         </table>
       </div>
-      <div>
+      <div className="landmark-actions">
         <button>Edit</button>
         <button>Delete</button>
       </div>

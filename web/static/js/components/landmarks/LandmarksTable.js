@@ -21,7 +21,7 @@ const LandmarkPanel = () => {
   ));
 
   return (
-    <table>
+    <table className="landmark-table">
       <thead>
         <tr>
           <th>+</th>

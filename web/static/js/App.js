@@ -7,11 +7,9 @@ const App = () => (
   <div>
     <UserPanel />
     <main>
-      <div>
-        <LandmarkPanel />
-        <LandmarkDetail />
-      </div>
+      <LandmarkPanel />
     </main>
+    <LandmarkDetail />
   </div>
 );
 

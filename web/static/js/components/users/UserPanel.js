@@ -20,7 +20,7 @@ const UserPanel = () => {
   }, []);
 
   return (
-    <header>
+    <header className="user-panel">
       <div>
         <h1>HITO</h1>
         <h2>{`Welcome ${currentUser.name}`}</h2>
