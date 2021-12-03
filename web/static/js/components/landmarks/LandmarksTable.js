@@ -21,23 +21,25 @@ const LandmarkPanel = () => {
   ));
 
   return (
-    <table className="landmark-table">
-      <thead>
-        <tr>
-          <th>+</th>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Native Name</th>
-          <th>Type</th>
-          <th>Continent</th>
-          <th>Country</th>
-          <th>City</th>
-        </tr>
-      </thead>
-      <tbody>
-        {mapLandmarks}
-      </tbody>
-    </table>
+    <div className="landmarks-con">
+      <table>
+        <thead>
+          <tr>
+            <th>+</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Native Name</th>
+            <th>Type</th>
+            <th>Continent</th>
+            <th>Country</th>
+            <th>City</th>
+          </tr>
+        </thead>
+        <tbody>
+          {mapLandmarks}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

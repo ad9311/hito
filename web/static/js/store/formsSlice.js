@@ -4,7 +4,8 @@ const initialState = {
   type: 'NONE',
   onEdit: false,
   onNew: false,
-  onDelete: false,
+  onDeleteUser: false,
+  onDeleteLm: false,
   formOpen: false,
 };
 
@@ -16,28 +17,45 @@ const formsSlice = createSlice({
       type: action.payload,
       onEdit: true,
       onNew: false,
-      onDelete: false,
+      onDeleteUser: false,
+      onDeleteLm: false,
       formOpen: true,
     }),
     newForm: (_state, action) => ({
       type: action.payload,
       onEdit: false,
       onNew: true,
-      onDelete: false,
+      onDeleteUser: false,
+      onDeleteLm: false,
       formOpen: true,
     }),
-    deleteForm: (_state, action) => ({
+    deleteUserForm: (_state, action) => ({
       type: action.payload,
       onEdit: false,
       onNew: false,
-      onDelete: true,
+      onDeleteUser: true,
+      onDeleteLm: false,
       formOpen: true,
     }),
-    closeForms: () => ({
+    deleteLmForm: (_state, action) => ({
+      type: action.payload,
+      onEdit: false,
+      onNew: false,
+      onDeleteUser: false,
+      onDeleteLm: true,
+      formOpen: true,
+    }),
+    closeForm: () => ({
       ...initialState,
     }),
   },
 });
 
-export const {editForm, newForm, deleteForm, closeForms} = formsSlice.actions;
+export const {
+  editForm,
+  newForm,
+  deleteUserForm,
+  deleteLmForm,
+  closeForm,
+} = formsSlice.actions;
 export default formsSlice;

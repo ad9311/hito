@@ -23,7 +23,11 @@
 }
 
 /* Landmarks Table */
-.landmark-table {
+.landmarks-con {
+  flex-grow: 1;
+}
+
+.landmarks-con table {
   margin-top: 2rem;
   width: 100%;
   text-align: center;

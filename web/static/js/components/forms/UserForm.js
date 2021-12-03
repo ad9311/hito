@@ -11,11 +11,18 @@ const UserForm = () => {
       <input type="hidden" name="csrf_token" value={csrfToken} />
       <label name="name" htmlFor="name">
         {onNew ?
-          <input type="text" id="name" name="name" placeholder="Name" /> :
           <input
             type="text"
             id="name"
             name="name"
+            placeholder="Name"
+            defaultValue=""
+          /> :
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder=""
             defaultValue={currentUser.name}
           />
         }
@@ -27,11 +34,13 @@ const UserForm = () => {
             id="username"
             name="username"
             placeholder="Username"
+            defaultValue=""
           /> :
           <input
             type="text"
             id="username"
             name="username"
+            placeholder=""
             defaultValue={currentUser.username}
           />
         }
@@ -75,12 +84,13 @@ const UserForm = () => {
         }
       </label>
       <label name="admin" htmlFor="admin">
+        Admin
         {onNew ?
-          <input type="checkbox" name="admin" /> :
-          <input type="checkbox" name="admin" checked readOnly />
+          <input type="checkbox" name="admin" value="Admin" checked="false" /> :
+          <input type="checkbox" name="admin" value="Admin" checked readOnly />
         }
       </label>
-      <input type="button" value="Submit" />
+      <input type="submit" value="Submit" />
     </form>
   );
 };

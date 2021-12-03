@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchCurrentUser} from '../../store/userSlice';
-import {deleteForm, editForm} from '../../store/formsSlice';
+import {deleteUserForm, editForm} from '../../store/formsSlice';
 
 const UserPanel = () => {
   const dispatch = useDispatch();
   const {userSet, currentUser} = useSelector((state) => state.users);
-  const {type, onEdit, onDelete} = useSelector((state) => state.forms);
+  const {type, onEdit, onDeleteUser} = useSelector((state) => state.forms);
   useEffect(() => {
     if (!userSet) {
       const userDataCon = document.getElementById('user-data');
@@ -27,8 +27,8 @@ const UserPanel = () => {
   };
 
   const formDeleteHandle = () => {
-    if (!onDelete || type !== 'USER') {
-      dispatch(deleteForm('USER'));
+    if (!onDeleteUser || type !== 'DELETE') {
+      dispatch(deleteUserForm('DELETE'));
     }
   };
 
