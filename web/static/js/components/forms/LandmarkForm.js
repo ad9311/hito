@@ -7,7 +7,7 @@ const LandmarkForm = () => {
   const {onNew} = useSelector((state) => state.forms);
 
   return (
-    <form action="/" method={onNew ? 'post' : 'patch'}>
+    <form action="/" method="post">
       <input type="hidden" name="csrf_token" value={csrfToken} />
       <input
         type="hidden"
@@ -65,6 +65,22 @@ const LandmarkForm = () => {
             name="type"
             placeholder=""
             defaultValue={selectedLm.type}
+          />
+        }
+      </label>
+      <label name="description" htmlFor="description">
+        {onNew ?
+          <textarea
+            id="description"
+            name="description"
+            placeholder="Description"
+            defaultValue=""
+          /> :
+          <textarea
+            id="description"
+            name="description"
+            placeholder=""
+            defaultValue={selectedLm.description}
           />
         }
       </label>
@@ -261,7 +277,7 @@ const LandmarkForm = () => {
       <label name="wiki-url" htmlFor="wiki-url">
         {onNew ?
           <input
-            type="text"
+            type="url"
             id="wiki-url"
             name="wiki-url"
             placeholder="Wiki URL"
@@ -279,7 +295,7 @@ const LandmarkForm = () => {
       <label name="img-url" htmlFor="img-url">
         {onNew ?
           <input
-            type="text"
+            type="url"
             id="img-url"
             name="img-url"
             placeholder="Image URL"

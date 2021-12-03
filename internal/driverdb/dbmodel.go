@@ -238,6 +238,49 @@ func (d *DB) DeleteUser(r *http.Request, u User) error {
 	return nil
 }
 
+// AddLandmark adds a new landmark to the database.
+func (d *DB) AddLandmark(r *http.Request, u User) error {
+	err := validateAdmin(r, u)
+	if err != nil {
+		return err
+	}
+
+	failed := fmt.Errorf("could not add landmark %s", r.PostFormValue("name"))
+	missingErr := errors.New("one or more requiered fields are missing")
+	required := []string{
+		"name",
+		"native-name",
+		"type",
+		"description",
+		"continent",
+		"country",
+		"city",
+		"latitude",
+		"longitude",
+		"start-year",
+		"end-year",
+		"length",
+		"width",
+		"height",
+		"wiki-url",
+		"img-url",
+	}
+
+	for _, v := range required {
+		if r.PostFormValue(v) == "" {
+			return missingErr
+		}
+	}
+
+	err = d.addLandmarkToDB(r, u)
+	if err != nil {
+		console.AssertError(err)
+		return failed
+	}
+
+	return nil
+}
+
 // Unexported functions
 
 func validateAdmin(r *http.Request, u User) error {
