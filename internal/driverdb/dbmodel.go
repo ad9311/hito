@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/ad9311/hito/internal/console"
 )
 
 // User holds data for a selected user.
@@ -55,76 +57,77 @@ type Landmark struct {
 	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
-// ValidateLoginForm validates that all required fields are present for logging in.
-func ValidateLoginForm(r *http.Request) error {
+// ValidateLogin validates user's credentials when logging in.
+func (d *DB) ValidateLogin(r *http.Request) (User, error) {
+	u := User{}
 	required := []string{"username", "password"}
 	for _, v := range required {
 		if r.PostFormValue(v) == "" {
-			return errors.New("username or password are required")
+			return u, errors.New("username or password are required")
 		}
 	}
-	return nil
-}
 
-// ValidateAdmin validates that a user's requests are from an administrator user
-// and that the currently logged-in user is the actual sender.
-func ValidateAdmin(r *http.Request, currentUser User) error {
-	formUsername := r.PostFormValue("current-user")
-	if formUsername != currentUser.Username {
-		return fmt.Errorf("user %s is not allowed to perform this action as user %s", formUsername, currentUser.Username)
+	password := r.PostFormValue("password")
+	username := r.PostFormValue("username")
+
+	u, err := d.getUserAndComparePasswords(username, password)
+	if err != nil {
+		console.AssertError(err)
+		return u, fmt.Errorf("invalid username or password")
 	}
-
-	if !currentUser.Admin {
-		return fmt.Errorf("user %s is not an administrator user", currentUser.Username)
-	}
-
-	return nil
-}
-
-// ValidateAddUser validates the required fields for adding a user are present.
-func ValidateAddUser(r *http.Request, currentUser User) (User, error) {
-	u := User{}
-	// required := []string{"name", "username", "password", "password-confirmation", "admin"}
-	// posError := "one or more requiered fields are missing"
-	// passMismatch := "passwords mismatch"
-
-	// err := ValidateAdmin(r, currentUser)
-	// if err != nil {
-	// 	return u, err
-	// }
-
-	// for _, v := range required {
-	// 	if r.PostFormValue(v) == "" {
-	// 		return u, errors.New(posError)
-	// 	}
-	// }
-
-	// password := r.PostFormValue("password")
-	// passConfirm := r.PostFormValue("password-confirmation")
-
-	// if password != passConfirm {
-	// 	return u, errors.New(passMismatch)
-	// }
-
-	// u.Name = r.PostFormValue("name")
-	// u.Username = r.PostFormValue("username")
-	// admin, err := strconv.ParseBool(r.PostFormValue("admin"))
-	// if err != nil {
-	// 	return User{}, errors.New("could not process user's privilages")
-	// }
-	// u.Admin = admin
-	// u.Password = password
 
 	return u, nil
 }
 
-// ValidateBodyForSingleUsers validates that the ajax request's body sent contains the required data.
-func ValidateBodyForSingleUsers(r *http.Request, username, csrfToken string) error {
+// CreateUser verify a post request form and creates a new user if valid.
+func (d *DB) CreateUser(r *http.Request, u User) error {
+	err := validateAdmin(r, u)
+	if err != nil {
+		return err
+	}
+
+	missingErr := errors.New("one or more requiered fields are missing")
+	failedErr := fmt.Errorf("could not create user %s", r.PostFormValue("username"))
+	passMismatch := errors.New("passwords mismatch")
+	required := []string{
+		"name",
+		"username",
+		"password",
+		"password-confirmation",
+		"admin",
+	}
+
+	for _, v := range required {
+		if r.PostFormValue(v) == "" {
+			return missingErr
+		}
+	}
+
+	password := r.PostFormValue("password")
+	passConfirm := r.PostFormValue("password-confirmation")
+	if password != passConfirm {
+		return passMismatch
+	}
+
+	err = d.addUserToDB(r)
+	if err != nil {
+		console.AssertError(err)
+		return failedErr
+	}
+
+	return nil
+}
+
+// GetUser validates request's origin and returns a slice of users with a single entry
+// being that the current user.
+func (d *DB) GetUser(r *http.Request, username, csrfToken string) (UserSlice, error) {
 	type required struct {
 		Username  string `json:"username"`
 		CSRFToken string `json:"csrf-token"`
 	}
+
 	req := required{}
+	us := UserSlice{}
 	var unmarshalErr *json.UnmarshalTypeError
 
 	decoder := json.NewDecoder(r.Body)
@@ -132,62 +135,43 @@ func ValidateBodyForSingleUsers(r *http.Request, username, csrfToken string) err
 	err := decoder.Decode(&req)
 	if err != nil {
 		if errors.As(err, &unmarshalErr) {
-			return errors.New("could not process request. Wrong data type provided")
+			return us, errors.New("could not process request. Wrong data type provided")
 		}
-		return errors.New("could not process request")
+		return us, errors.New("could not process request")
 	}
 
 	if username != req.Username {
-		return fmt.Errorf("user %s is not current user or is not logged-in", username)
+		return us, fmt.Errorf("user %s is not current user or is not logged-in", username)
 	}
 
 	if csrfToken != req.CSRFToken {
-		return errors.New("CSRFToken is not valid")
+		return us, errors.New("CSRFToken is not valid")
+	}
+
+	u, err := d.getUserByUsername(username)
+	if err != nil {
+		console.AssertError(err)
+		return us, fmt.Errorf("could not find user %s", username)
+	}
+
+	us.Entries = append(us.Entries, u)
+	us.Message = "success"
+
+	return us, nil
+}
+
+// Unexported functions
+
+func validateAdmin(r *http.Request, u User) error {
+	formUsername := r.PostFormValue("current-user")
+	errS := "is not allowed to perform this action as user"
+	if formUsername != u.Username {
+		return fmt.Errorf("user %s %s %s", formUsername, errS, u.Username)
+	}
+
+	if !u.Admin {
+		return fmt.Errorf("user %s is not an administrator user", u.Username)
 	}
 
 	return nil
 }
-
-// ValidateNewOrEditLandmark validates that all required fields are present
-// for creating or editing a landmark.
-// func ValidateNewOrEditLandmark(r *http.Request) (Landmark, error) {
-// 	required := []string{
-// 		"id",
-// 		"name",
-// 		"native-name",
-// 		"type",
-// 		"description",
-// 		"continent",
-// 		"country",
-// 		"city",
-// 		"latitude",
-// 		"longitude",
-// 		"start-year",
-// 		"end-year",
-// 		"length",
-// 		"width",
-// 		"height",
-// 		"wiki-url",
-// 		"img-url",
-// 		"user-id",
-// 	}
-
-// 	posError := "one or more requiered fields are missing"
-// 	lm := Landmark{}
-
-// 	for _, v := range required {
-// 		if r.PostFormValue("mode") == "new" {
-// 			if r.PostFormValue(v) != "" && r.PostFormValue(v) != "id" {
-// 				return lm, errors.New(posError)
-// 			}
-// 		} else if r.PostFormValue("mode") == "edit" {
-// 			if r.PostFormValue(v) != "" && r.PostFormValue(v) != "user-id" {
-// 				return lm, errors.New(posError)
-// 			}
-// 		} else {
-// 			return lm, errors.New("could not process form. Wrong format")
-// 		}
-// 	}
-
-// 	return lm, nil
-// }

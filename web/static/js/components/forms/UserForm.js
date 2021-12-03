@@ -11,7 +11,7 @@ const UserForm = () => {
       <input type="hidden" name="mode" value={onNew ? 'new' : 'edit'} />
       <input
         type="hidden"
-        name="current-username"
+        name="current-user"
         value={currentUser.username}
       />
       <label name="name" htmlFor="name">

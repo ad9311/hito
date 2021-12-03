@@ -13,7 +13,7 @@ const initialState = {
 
 export const fetchCurrentUser = createAsyncThunk(
     FETCH_CURRENT_USER, async (body) => {
-      const response = await fetchAPI('POST', 'users', body);
+      const response = await fetchAPI('POST', 'current-user', body);
       const newState = {
         csrfToken: body['csrf-token'],
         currentUser: response.data[0],

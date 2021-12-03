@@ -14,7 +14,7 @@ const (
 	logout = "/logout"
 
 	apiLandmarks = "/api/v1/landmarks"
-	users        = "/api/v1/users"
+	users        = "/api/v1/current-user"
 )
 
 func routes() http.Handler {
@@ -31,7 +31,7 @@ func routes() http.Handler {
 	mux.Get(logout, handler.Logout)
 
 	mux.Get(apiLandmarks, handler.Landmarks)
-	mux.Post(users, handler.PostUsers)
+	mux.Post(users, handler.PostCurrentUser)
 
 	fileServer := http.FileServer(http.Dir("./web/static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static/", fileServer))

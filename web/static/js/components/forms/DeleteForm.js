@@ -8,8 +8,12 @@ const DeleteForm = () => {
 
   return (
     <form action="/" method="delete">
-      <input type="hidden" name="username" value={currentUser.username} />
       <input type="hidden" name="csrf_token" value={csrfToken} />
+      <input
+        type="hidden"
+        name="current-user"
+        value={currentUser.username}
+      />
       {onDeleteLm &&
         <input
           type="hidden"

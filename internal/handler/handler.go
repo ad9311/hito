@@ -21,6 +21,7 @@ func New(cfg *app.InitConfig, dat *app.InitData) {
 // Home is the home page handler
 func Home(w http.ResponseWriter, r *http.Request) {
 	if isLoggedIn(r) {
+		config.ConnDB.UpdateLastLogin(&data.CurrentUser)
 		writeTemplate(w, "home.tmpl.html")
 	} else {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
@@ -48,8 +49,16 @@ func Login(w http.ResponseWriter, r *http.Request) {
 // PostLogin is the login page handler for post action.
 func PostLogin(w http.ResponseWriter, r *http.Request) {
 	_ = config.Session.RenewToken(r.Context())
-	err := r.ParseForm()
-	console.AssertError(err)
+	console.AssertError(r.ParseForm())
+	u, err := config.ConnDB.ValidateLogin(r)
+	if err != nil {
+		console.AssertError(err)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	} else {
+		config.Session.Put(r.Context(), "loggedIn", true)
+		data.CurrentUser = u
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
 }
 
 // Logout handles the logout action.

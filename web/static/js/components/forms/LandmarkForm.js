@@ -8,8 +8,12 @@ const LandmarkForm = () => {
 
   return (
     <form action="/" method={onNew ? 'post' : 'patch'}>
-      <input type="hidden" name="username" value={currentUser.username} />
       <input type="hidden" name="csrf_token" value={csrfToken} />
+      <input
+        type="hidden"
+        name="current-user"
+        value={currentUser.username}
+      />
       <label name="name" htmlFor="name">
         {onNew ?
           <input
