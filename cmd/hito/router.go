@@ -20,7 +20,6 @@ const (
 func routes() http.Handler {
 	mux := chi.NewRouter()
 
-	mux.Use(middleware.Logger)
 	mux.Use(middleware.Recoverer)
 	mux.Use(sessionsLoad)
 	mux.Use(newCsrf)

@@ -17,7 +17,7 @@ const DeleteForm = () => {
       {onDeleteLm &&
         <input
           type="hidden"
-          name="landmark"
+          name="landmark-id"
           value={selectedLm.id}
         />
       }

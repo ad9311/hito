@@ -341,3 +341,16 @@ func (d *DB) editLandmarkToDB(r *http.Request) error {
 
 	return nil
 }
+
+func (d *DB) deleteLandmarkFromDB(r *http.Request) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := "delete from landmarks where id=$1"
+	_, err := d.SQL.ExecContext(ctx, query, r.PostFormValue("landmark-id"))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

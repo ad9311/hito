@@ -325,6 +325,34 @@ func (d *DB) EditLandmark(r *http.Request, u User) error {
 	return nil
 }
 
+// DeleteLandmark deletes a landmark from the database.
+func (d *DB) DeleteLandmark(r *http.Request, u User) error {
+	err := validateAdmin(r, u)
+	if err != nil {
+		console.AssertError(err)
+		return err
+	}
+
+	err = validateCurrentUser(r, u)
+	if err != nil {
+		console.AssertError(err)
+		return err
+	}
+
+	_, err = d.ValidateLogin(r)
+	if err != nil {
+		console.AssertError(err)
+		return err
+	}
+
+	err = d.deleteLandmarkFromDB(r)
+	if err != nil {
+		console.AssertError(err)
+		return fmt.Errorf("could not delete landmark %s", u.Username)
+	}
+	return nil
+}
+
 // Unexported functions
 
 func validateAdmin(r *http.Request, u User) error {
