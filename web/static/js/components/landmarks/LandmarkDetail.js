@@ -30,6 +30,8 @@ const LandmarkDetail = () => {
       <div className="landmark-description">
         <h2>{selectedLm.name}</h2>
         <h3>{selectedLm.nativeName}</h3>
+        <p>{selectedLm.country}</p>
+        <p>{selectedLm.stateCity}</p>
         <div className="wiki">
           <h4>{selectedLm.type}</h4>
           <a href={selectedLm.wikiURL}><button>Wikipedia</button></a>
@@ -37,8 +39,20 @@ const LandmarkDetail = () => {
         <p>{selectedLm.description}</p>
       </div>
       <div className="detail-con">
-        <p>{selectedLm.country}</p>
-        <p>{selectedLm.stateCity}</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Start Year</th>
+              <th>End Year</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{selectedLm.startYear}</td>
+              <td>{selectedLm.endYear}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div className="detail-con">
         <table>

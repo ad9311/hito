@@ -257,7 +257,7 @@ func (d *DB) addLandmarkToDB(r *http.Request, u User) error {
 
 	query := `
 	insert into landmarks ("name",native_name,"type",description,continent,country,
-	city,start_year,end_year,area,height,wiki_url,img_url,user_username,created_at,updated_at)
+	state_city,start_year,end_year,area,height,wiki_url,img_url,user_username,created_at,updated_at)
 	values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
 	`
 
@@ -272,7 +272,7 @@ func (d *DB) addLandmarkToDB(r *http.Request, u User) error {
 		r.PostFormValue("description"),
 		r.PostFormValue("continent"),
 		r.PostFormValue("country"),
-		r.PostFormValue("city"),
+		r.PostFormValue("state-city"),
 		r.PostFormValue("start-year"),
 		r.PostFormValue("end-year"),
 		r.PostFormValue("area"),
@@ -299,7 +299,7 @@ func (d *DB) editLandmarkToDB(r *http.Request) error {
 
 	query := `
 	update landmarks set "name"=$1,native_name=$2,"type"=$3,description=$4,continent=$5,country=$6,
-	city=$7,start_year=$8,end_year=$9,area=$10,height=$11,
+	state_city=$7,start_year=$8,end_year=$9,area=$10,height=$11,
 	wiki_url=$12,img_url=$13,updated_at=$14 where id=$15
 	`
 
@@ -314,7 +314,7 @@ func (d *DB) editLandmarkToDB(r *http.Request) error {
 		r.PostFormValue("description"),
 		r.PostFormValue("continent"),
 		r.PostFormValue("country"),
-		r.PostFormValue("city"),
+		r.PostFormValue("state-city"),
 		r.PostFormValue("start-year"),
 		r.PostFormValue("end-year"),
 		r.PostFormValue("area"),
