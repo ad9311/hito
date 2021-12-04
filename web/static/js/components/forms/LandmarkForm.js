@@ -123,21 +123,21 @@ const LandmarkForm = () => {
           />
         }
       </label>
-      <label name="city" htmlFor="city">
+      <label name="state-city" htmlFor="state-city">
         {onNew ?
           <input
             type="text"
-            id="city"
-            name="city"
-            placeholder="City"
+            id="state-city"
+            name="state-city"
+            placeholder="State/City"
             defaultValue=""
           /> :
           <input
             type="text"
-            id="city"
-            name="city"
+            id="state-city"
+            name="state-city"
             placeholder=""
-            defaultValue={selectedLm.city}
+            defaultValue={selectedLm.stateCity}
           />
         }
       </label>

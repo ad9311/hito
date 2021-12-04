@@ -38,7 +38,7 @@ const LandmarkDetail = () => {
       </div>
       <div className="detail-con">
         <p>{selectedLm.country}</p>
-        <p>{selectedLm.city}</p>
+        <p>{selectedLm.stateCity}</p>
       </div>
       <div className="detail-con">
         <table>

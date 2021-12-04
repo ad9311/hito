@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS landmarks (
   description TEXT NOT NULL,
   continent VARCHAR (255) NOT NULL,
   country VARCHAR (255) NOT NULL,
-  city VARCHAR (255) NOT NULL,
+  state_city VARCHAR (255) NOT NULL,
   latitude NUMERIC NOT NULL,
   longitude NUMERIC NOT NULL,
   start_year INTEGER NOT NULL,

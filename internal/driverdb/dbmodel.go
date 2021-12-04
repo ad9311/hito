@@ -43,7 +43,7 @@ type Landmark struct {
 	Description  string    `json:"description"`
 	Continent    string    `json:"continent"`
 	Country      string    `json:"country"`
-	City         string    `json:"city"`
+	StateCity    string    `json:"stateCity"`
 	Latitude     float64   `json:"latitude"`
 	Longitude    float64   `json:"longitude"`
 	StartYear    int       `json:"startYear"`
@@ -254,7 +254,7 @@ func (d *DB) AddLandmark(r *http.Request, u User) error {
 		"description",
 		"continent",
 		"country",
-		"city",
+		"state-city",
 		"latitude",
 		"longitude",
 		"start-year",
@@ -298,7 +298,7 @@ func (d *DB) EditLandmark(r *http.Request, u User) error {
 		"description",
 		"continent",
 		"country",
-		"city",
+		"state-city",
 		"latitude",
 		"longitude",
 		"start-year",

@@ -61,7 +61,7 @@ func (d *DB) GetLandmarks() (LandmarkSlice, error) {
 			&lm.Description,
 			&lm.Continent,
 			&lm.Country,
-			&lm.City,
+			&lm.StateCity,
 			&lm.Latitude,
 			&lm.Longitude,
 			&lm.StartYear,
