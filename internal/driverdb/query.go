@@ -62,12 +62,9 @@ func (d *DB) GetLandmarks() (LandmarkSlice, error) {
 			&lm.Continent,
 			&lm.Country,
 			&lm.StateCity,
-			&lm.Latitude,
-			&lm.Longitude,
 			&lm.StartYear,
 			&lm.EndYear,
-			&lm.Length,
-			&lm.Width,
+			&lm.Area,
 			&lm.Height,
 			&lm.WikiURL,
 			&lm.ImgURL,
@@ -260,9 +257,8 @@ func (d *DB) addLandmarkToDB(r *http.Request, u User) error {
 
 	query := `
 	insert into landmarks ("name",native_name,"type",description,continent,country,
-	city,latitude,longitude,start_year,end_year,lengths,
-	width,height,wiki_url,img_url,user_username,created_at,updated_at)
-	values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
+	city,start_year,end_year,area,height,wiki_url,img_url,user_username,created_at,updated_at)
+	values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
 	`
 
 	err := errors.New("")
@@ -277,12 +273,9 @@ func (d *DB) addLandmarkToDB(r *http.Request, u User) error {
 		r.PostFormValue("continent"),
 		r.PostFormValue("country"),
 		r.PostFormValue("city"),
-		r.PostFormValue("latitude"),
-		r.PostFormValue("longitude"),
 		r.PostFormValue("start-year"),
 		r.PostFormValue("end-year"),
-		r.PostFormValue("length"),
-		r.PostFormValue("width"),
+		r.PostFormValue("area"),
 		r.PostFormValue("height"),
 		r.PostFormValue("wiki-url"),
 		r.PostFormValue("img-url"),
@@ -306,8 +299,8 @@ func (d *DB) editLandmarkToDB(r *http.Request) error {
 
 	query := `
 	update landmarks set "name"=$1,native_name=$2,"type"=$3,description=$4,continent=$5,country=$6,
-	city=$7,latitude=$8,longitude=$9,start_year=$10,end_year=$11,lengths=$12,width=$13,height=$14,
-	wiki_url=$15,img_url=$16,updated_at=$17 where id=$18
+	city=$7,start_year=$8,end_year=$9,area=$10,height=$11,
+	wiki_url=$12,img_url=$13,updated_at=$14 where id=$15
 	`
 
 	err := errors.New("")
@@ -322,12 +315,9 @@ func (d *DB) editLandmarkToDB(r *http.Request) error {
 		r.PostFormValue("continent"),
 		r.PostFormValue("country"),
 		r.PostFormValue("city"),
-		r.PostFormValue("latitude"),
-		r.PostFormValue("longitude"),
 		r.PostFormValue("start-year"),
 		r.PostFormValue("end-year"),
-		r.PostFormValue("length"),
-		r.PostFormValue("width"),
+		r.PostFormValue("area"),
 		r.PostFormValue("height"),
 		r.PostFormValue("wiki-url"),
 		r.PostFormValue("img-url"),

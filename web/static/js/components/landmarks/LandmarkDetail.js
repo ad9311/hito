@@ -44,31 +44,13 @@ const LandmarkDetail = () => {
         <table>
           <thead>
             <tr>
-              <th>Latitude</th>
-              <th>Longitude</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{selectedLm.latitude}</td>
-              <td>{selectedLm.longitude}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div className="detail-con">
-        <table>
-          <thead>
-            <tr>
-              <th>Length</th>
-              <th>Width</th>
+              <th>Area</th>
               <th>Height</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>{selectedLm.length}</td>
-              <td>{selectedLm.width}</td>
+              <td>{selectedLm.area}</td>
               <td>{selectedLm.height}</td>
             </tr>
           </tbody>

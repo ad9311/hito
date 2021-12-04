@@ -141,46 +141,6 @@ const LandmarkForm = () => {
           />
         }
       </label>
-      <label name="latitude" htmlFor="latitude">
-        {onNew ?
-          <input
-            type="number"
-            step="any"
-            id="latitude"
-            name="latitude"
-            placeholder="latitude"
-            defaultValue=""
-          /> :
-          <input
-            type="number"
-            step="any"
-            id="latitude"
-            name="latitude"
-            placeholder=""
-            defaultValue={selectedLm.latitude}
-          />
-        }
-      </label>
-      <label name="longitude" htmlFor="longitude">
-        {onNew ?
-          <input
-            type="number"
-            step="any"
-            id="longitude"
-            name="longitude"
-            placeholder="Longitude"
-            defaultValue=""
-          /> :
-          <input
-            type="number"
-            step="any"
-            id="longitude"
-            name="longitude"
-            placeholder=""
-            defaultValue={selectedLm.longitude}
-          />
-        }
-      </label>
       <label name="start-year" htmlFor="start-year">
         {onNew ?
           <input
@@ -217,43 +177,23 @@ const LandmarkForm = () => {
           />
         }
       </label>
-      <label name="length" htmlFor="length">
+      <label name="area" htmlFor="area">
         {onNew ?
           <input
             type="number"
             step="any"
-            id="length"
-            name="length"
+            id="area"
+            name="area"
             placeholder="Length"
             defaultValue=""
           /> :
           <input
             type="number"
             step="any"
-            id="length"
-            name="length"
+            id="area"
+            name="area"
             placeholder=""
-            defaultValue={selectedLm.length}
-          />
-        }
-      </label>
-      <label name="width" htmlFor="width">
-        {onNew ?
-          <input
-            type="number"
-            step="any"
-            id="width"
-            name="width"
-            placeholder="Width"
-            defaultValue=""
-          /> :
-          <input
-            type="number"
-            step="any"
-            id="width"
-            name="width"
-            placeholder=""
-            defaultValue={selectedLm.width}
+            defaultValue={selectedLm.area}
           />
         }
       </label>
