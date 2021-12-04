@@ -30,6 +30,7 @@ const LandmarkRow = (props) => {
       <td>{landmark.continent}</td>
       <td>{landmark.country}</td>
       <td>{landmark.city}</td>
+      <td>{landmark.userUsername}</td>
     </tr>
   );
 };

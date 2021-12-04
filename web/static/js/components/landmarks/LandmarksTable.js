@@ -33,6 +33,7 @@ const LandmarkPanel = () => {
             <th>Continent</th>
             <th>Country</th>
             <th>City</th>
+            <th>Creator</th>
           </tr>
         </thead>
         <tbody>

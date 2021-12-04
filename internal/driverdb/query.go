@@ -71,7 +71,7 @@ func (d *DB) GetLandmarks() (LandmarkSlice, error) {
 			&lm.Height,
 			&lm.WikiURL,
 			&lm.ImgURL,
-			&lm.UserID,
+			&lm.UderUsername,
 			&lm.CreatedAt,
 			&lm.UpdatedAt,
 		)
@@ -261,7 +261,7 @@ func (d *DB) addLandmarkToDB(r *http.Request, u User) error {
 	query := `
 	insert into landmarks ("name",native_name,"type",description,continent,country,
 	city,latitude,longitude,start_year,end_year,lengths,
-	width,height,wiki_url,img_url,user_id,created_at,updated_at)
+	width,height,wiki_url,img_url,user_username,created_at,updated_at)
 	values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
 	`
 
@@ -286,7 +286,7 @@ func (d *DB) addLandmarkToDB(r *http.Request, u User) error {
 		r.PostFormValue("height"),
 		r.PostFormValue("wiki-url"),
 		r.PostFormValue("img-url"),
-		u.ID,
+		u.Username,
 		dt,
 		dt,
 	)

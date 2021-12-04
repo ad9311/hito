@@ -36,26 +36,26 @@ type LandmarkSlice struct {
 
 // Landmark holds data for selected landmark.
 type Landmark struct {
-	ID          int       `json:"id"`
-	Name        string    `json:"name"`
-	NativeName  string    `json:"nativeName"`
-	Type        string    `json:"type"`
-	Description string    `json:"description"`
-	Continent   string    `json:"continent"`
-	Country     string    `json:"country"`
-	City        string    `json:"city"`
-	Latitude    float64   `json:"latitude"`
-	Longitude   float64   `json:"longitude"`
-	StartYear   int       `json:"startYear"`
-	EndYear     int       `json:"endYear"`
-	Length      float64   `json:"length"`
-	Width       float64   `json:"width"`
-	Height      float64   `json:"height"`
-	WikiURL     string    `json:"wikiURL"`
-	ImgURL      string    `json:"imgURL"`
-	UserID      int       `json:"userID"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	ID           int       `json:"id"`
+	Name         string    `json:"name"`
+	NativeName   string    `json:"nativeName"`
+	Type         string    `json:"type"`
+	Description  string    `json:"description"`
+	Continent    string    `json:"continent"`
+	Country      string    `json:"country"`
+	City         string    `json:"city"`
+	Latitude     float64   `json:"latitude"`
+	Longitude    float64   `json:"longitude"`
+	StartYear    int       `json:"startYear"`
+	EndYear      int       `json:"endYear"`
+	Length       float64   `json:"length"`
+	Width        float64   `json:"width"`
+	Height       float64   `json:"height"`
+	WikiURL      string    `json:"wikiURL"`
+	ImgURL       string    `json:"imgURL"`
+	UderUsername string    `json:"userUsername"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
 }
 
 // ValidateLogin validates user's credentials when logging in.
