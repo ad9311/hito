@@ -75,6 +75,10 @@
   padding: 0 0 1.5rem 2.5rem;
 }
 
+.detail-con table {
+  text-align: center;
+}
+
 .detail-con td {
   padding: 0 0.85rem;
 }
@@ -93,3 +97,44 @@
   margin-top: 2rem;
   width: 20%;
 }
+
+.form-con form {
+  margin-top: 1rem;
+}
+
+.form-con fieldset {
+  border: none;
+}
+
+.form-con input[type="radio"] {
+  display: inline-block;
+  margin-top: 0.5rem;
+  width: auto;
+}
+
+.form-con input[type="submit"] {
+  width: auto;
+}
+
+
+.form-con input {
+  display: block;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.form-con textarea {
+  height: 7rem;
+  width: 100%;
+  resize: none;
+}
+
+.form-controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-actions button {
+  margin-right: 0.5rem;
+}
+

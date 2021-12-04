@@ -16,40 +16,22 @@ const UserForm = () => {
         value={currentUser.username}
       />
       <label name="name" htmlFor="name">
-        {onNew ?
-          <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Name"
-            defaultValue=""
-          /> :
-          <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder=""
-            defaultValue={currentUser.name}
-          />
-        }
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Name"
+          defaultValue={onNew ? '' : currentUser.name}
+        />
       </label>
       <label name="username" htmlFor="username">
-        {onNew ?
-          <input
-            type="text"
-            id="username"
-            name="username"
-            placeholder="Username"
-            defaultValue=""
-          /> :
-          <input
-            type="text"
-            id="username"
-            name="username"
-            placeholder=""
-            defaultValue={currentUser.username}
-          />
-        }
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Username"
+          defaultValue={onNew ? '' : currentUser.username}
+        />
       </label>
       <label name="password" htmlFor="password">
         {onNew ?
@@ -91,25 +73,29 @@ const UserForm = () => {
       </label>
       {onNew &&
         <fieldset>
-          <label name="no-admin" htmlFor="no-admin">
-            <input
-              type="radio"
-              value="false"
-              name="admin"
-              id="no-admin"
-              checked
-            />
-            Standard User
-          </label>
-          <label name="admin" htmlFor="admin">
-            <input
-              type="radio"
-              value="true"
-              name="admin"
-              id="admin"
-            />
-            Admin
-          </label>
+          <div>
+            <label name="no-admin" htmlFor="no-admin">
+              <input
+                type="radio"
+                value="false"
+                name="admin"
+                id="no-admin"
+                checked
+              />
+              Standard User
+            </label>
+          </div>
+          <div>
+            <label name="admin" htmlFor="admin">
+              <input
+                type="radio"
+                value="true"
+                name="admin"
+                id="admin"
+              />
+              Administrator User
+            </label>
+          </div>
         </fieldset>
       }
       <input type="submit" value="Submit" />

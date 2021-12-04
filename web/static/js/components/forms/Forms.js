@@ -50,9 +50,31 @@ const Forms = () => {
 
   return (
     <div className="form-con">
-      <button type="button" onClick={newUserHandle}>Add User</button>
-      <button type="button" onClick={newLandmarkHandle}>Add Landmark</button>
-      {formOpen && <button type="button" onClick={closeFormHandle}>X</button>}
+      <div className="form-controls">
+        <div className="form-actions">
+          <button
+            type="button"
+            onClick={newUserHandle}
+          >
+            Add User
+          </button>
+          <button
+            type="button"
+            onClick={newLandmarkHandle}
+          >
+            Add Landmark
+          </button>
+        </div>
+        {formOpen &&
+          <button
+            className="close-form-button"
+            type="button"
+            onClick={closeFormHandle}
+          >
+            X
+          </button>
+        }
+      </div>
       {formOpen && typeOfFormHandle()}
     </div>
   );
