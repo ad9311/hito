@@ -8,19 +8,19 @@ import UserForm from './UserForm';
 const Forms = () => {
   const dispatch = useDispatch();
   const {
-    type,
+    model,
     onNew,
     formOpen,
   } = useSelector((state) => state.forms);
 
   const newUserHandle = () => {
-    if (!onNew || type !== 'USER') {
+    if (!onNew || model !== 'USER') {
       dispatch(newForm('USER'));
     }
   };
 
   const newLandmarkHandle = () => {
-    if (!onNew || type !== 'LANDMARK') {
+    if (!onNew || model !== 'LANDMARK') {
       dispatch(newForm('LANDMARK'));
     }
   };
@@ -30,7 +30,7 @@ const Forms = () => {
   };
 
   const typeOfFormHandle = () => {
-    switch (type) {
+    switch (model) {
       case 'USER':
         return (
           <UserForm />

@@ -8,7 +8,8 @@ const UserForm = () => {
   return (
     <form action="/" method="post">
       <input type="hidden" name="csrf_token" value={csrfToken} />
-      <input type="hidden" name="mode" value={onNew ? 'new' : 'edit'} />
+      <input type="hidden" name="_method" value={onNew ? 'post' : 'patch'} />
+      <input type="hidden" name="model" value="user" />
       <input
         type="hidden"
         name="current-user"

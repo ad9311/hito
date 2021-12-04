@@ -6,28 +6,31 @@ import {deleteUserForm, editForm} from '../../store/formsSlice';
 const UserPanel = () => {
   const dispatch = useDispatch();
   const {userSet, currentUser} = useSelector((state) => state.users);
-  const {type, onEdit, onDeleteUser} = useSelector((state) => state.forms);
+  const {model, onEdit, onDeleteUser} = useSelector((state) => state.forms);
   useEffect(() => {
     if (!userSet) {
-      const userDataCon = document.getElementById('user-data');
-      if (userDataCon !== null) {
+      const user = document.getElementById('user');
+      const csrfToken = document.getElementById('csrf_token');
+      if (user !== null && csrfToken !== null) {
         const body = {
-          'username': userDataCon.children[0].innerHTML,
-          'csrf-token': userDataCon.children[1].innerHTML,
+          'username': user.content,
+          'csrf-token': csrfToken.content,
         };
         dispatch(fetchCurrentUser(body));
+        user.remove();
+        csrfToken.remove();
       }
     }
   }, []);
 
   const formEditHandle = () => {
-    if (!onEdit || type !== 'USER') {
+    if (!onEdit || model !== 'USER') {
       dispatch(editForm('USER'));
     }
   };
 
   const formDeleteHandle = () => {
-    if (!onDeleteUser || type !== 'DELETE') {
+    if (!onDeleteUser || model !== 'DELETE') {
       dispatch(deleteUserForm('DELETE'));
     }
   };

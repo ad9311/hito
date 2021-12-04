@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
-  type: 'NONE',
+  model: 'NONE',
   onEdit: false,
   onNew: false,
   onDeleteUser: false,
@@ -14,7 +14,7 @@ const formsSlice = createSlice({
   initialState,
   reducers: {
     editForm: (_state, action) => ({
-      type: action.payload,
+      model: action.payload,
       onEdit: true,
       onNew: false,
       onDeleteUser: false,
@@ -22,7 +22,7 @@ const formsSlice = createSlice({
       formOpen: true,
     }),
     newForm: (_state, action) => ({
-      type: action.payload,
+      model: action.payload,
       onEdit: false,
       onNew: true,
       onDeleteUser: false,
@@ -30,7 +30,7 @@ const formsSlice = createSlice({
       formOpen: true,
     }),
     deleteUserForm: (_state, action) => ({
-      type: action.payload,
+      model: action.payload,
       onEdit: false,
       onNew: false,
       onDeleteUser: true,
@@ -38,7 +38,7 @@ const formsSlice = createSlice({
       formOpen: true,
     }),
     deleteLmForm: (_state, action) => ({
-      type: action.payload,
+      model: action.payload,
       onEdit: false,
       onNew: false,
       onDeleteUser: false,

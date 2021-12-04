@@ -1,11 +1,5 @@
 {{template "index" .}}
 {{define "content"}}
-{{with index .CurrentUser -}}
-<div id="user-data">
-  <span hidden>{{.Username}}</span>
-  {{- end}}
-  <span hidden>{{.CSRFToken}}</span>
-</div>
 <div id="root">
 </div>
 {{end}}

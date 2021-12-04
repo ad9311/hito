@@ -10,6 +10,8 @@ const LandmarkForm = () => {
     <form action="/" method="post">
       <input type="hidden" name="landmark-id" value={selectedLm.id} />
       <input type="hidden" name="csrf_token" value={csrfToken} />
+      <input type="hidden" name="_method" value={onNew ? 'post' : 'patch'} />
+      <input type="hidden" name="model" value="landmark" />
       <input
         type="hidden"
         name="current-user"

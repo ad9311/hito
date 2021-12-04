@@ -31,8 +31,19 @@ func Home(w http.ResponseWriter, r *http.Request) {
 // PostHome is the home page handler for post action.
 func PostHome(w http.ResponseWriter, r *http.Request) {
 	if isLoggedIn(r) {
-		err := config.ConnDB.DeleteLandmark(r, data.CurrentUser)
-		console.AssertError(err)
+		switch r.PostFormValue("_method") {
+		case "post":
+			w.Write([]byte("post"))
+			break
+		case "patch":
+			w.Write([]byte("patch"))
+			break
+		case "delete":
+			w.Write([]byte("delete"))
+			break
+		default:
+			w.Write([]byte("default"))
+		}
 	} else {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}

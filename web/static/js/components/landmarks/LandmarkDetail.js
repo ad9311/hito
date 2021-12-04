@@ -4,20 +4,20 @@ import {deleteLmForm, editForm} from '../../store/formsSlice';
 
 const LandmarkDetail = () => {
   const dispatch = useDispatch();
-  const {type, onEdit, onDeleteLm} = useSelector((state) => state.forms);
+  const {model, onEdit, onDeleteLm} = useSelector((state) => state.forms);
   const {
     selectedLmStatus,
     selectedLm,
   } = useSelector((state) => state.landmarks);
 
   const formEditHandle = () => {
-    if (!onEdit || type !='LANDMARK') {
+    if (!onEdit || model !='LANDMARK') {
       dispatch(editForm('LANDMARK'));
     }
   };
 
   const formDeleteHandle = () => {
-    if (!onDeleteLm || type != 'DELETE') {
+    if (!onDeleteLm || model != 'DELETE') {
       dispatch(deleteLmForm('DELETE'));
     }
   };
