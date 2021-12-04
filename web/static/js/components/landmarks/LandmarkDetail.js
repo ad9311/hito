@@ -1,6 +1,7 @@
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {deleteLmForm, editForm} from '../../store/formsSlice';
+import {closeLmDetail} from '../../store/landmarkSlice';
 
 const LandmarkDetail = () => {
   const dispatch = useDispatch();
@@ -22,9 +23,21 @@ const LandmarkDetail = () => {
     }
   };
 
+  const closeLmDetailHandle = () => {
+    if (selectedLmStatus) {
+      dispatch(closeLmDetail());
+    }
+  };
+
   const detail = () => (
     <article className="landmark-detail">
       <div className="landmark-img">
+        <button
+          type="button"
+          onClick={closeLmDetailHandle}
+        >
+            X
+        </button>
         <img src={selectedLm.imgURL} alt={selectedLm.name} />
       </div>
       <div className="landmark-description">

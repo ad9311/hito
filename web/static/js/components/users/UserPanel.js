@@ -37,28 +37,35 @@ const UserPanel = () => {
 
   return (
     <header className="user-panel">
-      <div>
-        <h1>HITO</h1>
-        <h2>{`Welcome ${currentUser.name}`}</h2>
+      <div className="user-info">
+        <div>
+          <h1>HITO</h1>
+          <h2>{`Welcome ${currentUser.name}`}</h2>
+        </div>
+        <div>
+          <h3>{currentUser.username}</h3>
+          <p>{currentUser.admin ? 'Administrator user' : 'Standard user'}</p>
+        </div>
+        <div>
+          <p>
+            {`Last login: ${new Date(currentUser.lastLogin).toLocaleString()}`}
+          </p>
+          <p>
+            {`Updated at: ${new Date(currentUser.updatedAt).toLocaleString()}`}
+          </p>
+          <p>
+            {`Created at: ${new Date(currentUser.createdAt).toLocaleString()}`}
+          </p>
+        </div>
+        <div>
+          <button type="button" onClick={formEditHandle}>Edit</button>
+          <button type="button" onClick={formDeleteHandle}>Delete</button>
+        </div>
       </div>
-      <div>
-        <h3>{currentUser.username}</h3>
-        <p>{currentUser.admin ? 'Administrator user' : 'Standard user'}</p>
-      </div>
-      <div>
-        <p>
-          {`Last login: ${new Date(currentUser.lastLogin).toLocaleString()}`}
-        </p>
-        <p>
-          {`Updated at: ${new Date(currentUser.updatedAt).toLocaleString()}`}
-        </p>
-        <p>
-          {`Created at: ${new Date(currentUser.createdAt).toLocaleString()}`}
-        </p>
-      </div>
-      <div>
-        <button type="button" onClick={formEditHandle}>Edit</button>
-        <button type="button" onClick={formDeleteHandle}>Delete</button>
+      <div className="user-logout">
+        <a href="/logout">
+          <button type="button">Logout</button>
+        </a>
       </div>
     </header>
   );

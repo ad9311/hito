@@ -1,8 +1,39 @@
 /* app.css */
+/* Login */
+.login-title {
+  margin-top: 10rem;
+  text-align: center;
+}
+
+.login-form {
+  margin: auto;
+  width: 15%;
+}
+
+.login-form input {
+  display: block;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.login-form input[type="submit"] {
+  width: auto;
+}
+
 /* User Panel */
 .user-panel {
   display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.user-info {
+  display: flex;
   align-items: flex-end;
+}
+
+.user-logout {
+  padding-right: 0 !important;
 }
 
 .user-panel div {
@@ -44,7 +75,13 @@
 }
 
 .landmark-img {
-  width: 40%;
+  position: relative;
+}
+
+.landmark-img button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
 }
 
 .landmark-img img {
@@ -94,7 +131,7 @@
 /* Forms */
 
 .form-con {
-  margin-top: 2rem;
+  margin-top: 3.5rem;
   width: 20%;
 }
 
@@ -124,7 +161,7 @@
 }
 
 .form-con textarea {
-  height: 7rem;
+  height: 5rem;
   width: 100%;
   resize: none;
 }

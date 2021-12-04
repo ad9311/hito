@@ -1,10 +1,10 @@
 {{template "index" .}}
 {{define "content"}}
 <main>
-  <div>
+  <div class="login-title">
     <h1>HITO</h1>
   </div>
-  <div>
+  <div class="login-form">
     <form action="/login" method="post">
       <input type="hidden" name="csrf_token" value="{{.CSRFToken}}"/>
       <label for="username">

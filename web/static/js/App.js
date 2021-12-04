@@ -7,7 +7,7 @@ import Forms from './components/forms/Forms';
 const App = () => (
   <div>
     <UserPanel />
-    <main>
+    <main className="main-home">
       <LandmarkPanel />
       <Forms />
     </main>

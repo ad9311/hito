@@ -25,10 +25,15 @@ header {
   padding: 1rem;
 }
 
-main {
+.main-home {
   padding: 0 1rem;
   display: flex;
   align-content: flex-start;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 input, textarea {

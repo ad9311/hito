@@ -7,11 +7,12 @@ const LandmarkRow = (props) => {
   const dispatch = useDispatch();
   const {
     selectedLm,
+    selectedLmStatus,
   } = useSelector((state) => state.landmarks);
   const {landmark} = props;
 
   const selectLandmark = () => {
-    if (selectedLm.name !== landmark.name) {
+    if (selectedLm.name !== landmark.name || !selectedLmStatus) {
       dispatch(selectLm(landmark));
     }
   };
