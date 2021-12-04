@@ -1,15 +1,11 @@
 # .gitignore for HITO
 
-# Files not meant to be committed.
+# Temporary
 tmp/
-
-# Linter configuration files.
-.stylelintrc.json
-.eslintrc.json
 
 # Node Modules
 node_modules/
 package-lock.json
 
-# Unnecessary build files
-web/static/js/index.html
+# Build
+build/

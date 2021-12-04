@@ -5,14 +5,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{with index .CurrentUser -}}
+    <meta id="user" content="{{.Username}}">
+    {{- end}}
+    <meta id="csrf_token" content="{{.CSRFToken}}">
     <link rel="shortcut icon" type="image/x-icon" href="https://cdns.iconmonstr.com/wp-content/assets/preview/2012/240/iconmonstr-circle-1.png">
     <link rel="stylesheet" href="./static/css/index.css">
+    <link rel="stylesheet" href="./static/css/app.css">
     <title>HITO</title>
   </head>
   <body>
     {{block "content" .}}
     {{end}}
-    <script src="./static/js/bundle.js"></script>
+    <script src="./static/build/bundle.min.js"></script>
   </body>
 </html>
 {{end}}

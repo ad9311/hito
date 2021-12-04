@@ -4,163 +4,43 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/ad9311/hito/internal/console"
-	"github.com/ad9311/hito/internal/dbmodel"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// ValidateLogin validates the user's username and password at login.
-func (d *DB) ValidateLogin(username, password string) (dbmodel.User, error) {
+// UpdateLastLogin updates the currently logged-in user's last login date.
+func (d *DB) UpdateLastLogin(u *User) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	user := dbmodel.User{}
-	var storedPassword string
-	query := "select * from users where username = $1"
-	row := d.SQL.QueryRowContext(ctx, query, username)
-	err := row.Scan(
-		&user.ID,
-		&user.Name,
-		&user.Username,
-		&storedPassword,
-		&user.Admin,
-		&user.LastLogin,
-		&user.CreatedAt,
-		&user.UpdatedAt,
-	)
-	if err != nil {
-		return user, errors.New("invalid username or password")
-	}
-	err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
-	if err == bcrypt.ErrMismatchedHashAndPassword {
-		return user, errors.New("invalid username or password")
-	} else if err != nil {
-		return user, err
-	}
-
-	return user, nil
-}
-
-// UpdateLastLogin updates the last login column from the users table.
-func (d *DB) UpdateLastLogin(u *dbmodel.User) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-
+	posErr := fmt.Errorf("could not update last login for user %s", u.Username)
 	query := "update users set last_login = $1 where id = $2"
-	posError := "could not update last login for user"
 	dt, err := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 	if err != nil {
 		console.AssertError(err)
-		return fmt.Errorf("%s %s", posError, u.Username)
+		return posErr
 	}
 
 	_, err = d.SQL.ExecContext(ctx, query, dt, u.ID)
 	if err != nil {
 		console.AssertError(err)
-		return fmt.Errorf("%s %s", posError, u.Username)
+		return posErr
 	}
 	u.LastLogin = dt
 
 	return nil
 }
 
-// AddOrEditUser add a new user to the data base.
-func (d *DB) AddOrEditUser(u dbmodel.User, password, mode string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+// GetLandmarks returns all the landmarks in the database.
+func (d *DB) GetLandmarks() (LandmarkSlice, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	dt, errDt := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	if errDt != nil {
-		console.AssertError(errDt)
-	}
-
-	posError := "could not add or edit user"
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		console.AssertError(err)
-		return fmt.Errorf("%s, %s", posError, u.Name)
-	}
-
-	query1 := `insert into users
-	("name",username,password,admin,last_login,created_at,updated_at)
-	values ($1,$2,$3,$4,$5,$6,$7)
-	`
-	query2 := `update users
-	set "name"=$1,username=$2,"password"=$3,updated_at=$4
-	where id=$5;
-	`
-
-	if mode == "new" {
-		_, err := d.SQL.ExecContext(
-			ctx,
-			query1,
-			u.Name,
-			u.Username,
-			hashPassword,
-			u.Admin,
-			"0001-01-01 01:00:00",
-			dt,
-			dt,
-		)
-		if err != nil {
-			console.AssertError(err)
-			return fmt.Errorf("%s %s", posError, u.Name)
-		}
-	} else if mode == "edit" {
-		_, err := d.SQL.ExecContext(
-			ctx,
-			query2,
-			u.Name,
-			u.Username,
-			hashPassword,
-			dt,
-			u.ID,
-		)
-		if err != nil {
-			console.AssertError(err)
-			return fmt.Errorf("%s %s", posError, u.Name)
-		}
-	}
-
-	return nil
-}
-
-// DeleteUser deletes a user from the database.
-func (d *DB) DeleteUser(id int) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-
-	posError := "could not find user by id"
-	u, err := d.findUserByID(id)
-	if err != nil {
-		console.AssertError(err)
-		return fmt.Errorf("%s %d", posError, id)
-	}
-	if u.ID < 1 {
-		err = fmt.Errorf("%s %d", posError, id)
-		console.AssertError(err)
-		return err
-	}
-
-	query := `delete from users where id=$1`
-
-	_, err = d.SQL.ExecContext(ctx, query, u.ID)
-	if err != nil {
-		console.AssertError(err)
-		return fmt.Errorf("could not delete from database user %s", u.Name)
-	}
-	return nil
-}
-
-// GetAllLandmarks returns all the landmarks in the database.
-func (d *DB) GetAllLandmarks() (dbmodel.LandmarkSlice, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-
-	lms := dbmodel.LandmarkSlice{}
-	lm := dbmodel.Landmark{}
+	lms := LandmarkSlice{}
+	lm := Landmark{}
 	posError := "could not get landmarks from database"
 	query := "select * from landmarks"
 
@@ -181,17 +61,14 @@ func (d *DB) GetAllLandmarks() (dbmodel.LandmarkSlice, error) {
 			&lm.Description,
 			&lm.Continent,
 			&lm.Country,
-			&lm.City,
-			&lm.Latitude,
-			&lm.Longitude,
+			&lm.StateCity,
 			&lm.StartYear,
 			&lm.EndYear,
-			&lm.Length,
-			&lm.Width,
+			&lm.Area,
 			&lm.Height,
 			&lm.WikiURL,
 			&lm.ImgURL,
-			&lm.UserID,
+			&lm.UderUsername,
 			&lm.CreatedAt,
 			&lm.UpdatedAt,
 		)
@@ -207,147 +84,263 @@ func (d *DB) GetAllLandmarks() (dbmodel.LandmarkSlice, error) {
 	return lms, nil
 }
 
-// AddOrEditLandmark adds a new landmark to the database.
-func (d *DB) AddOrEditLandmark(lm dbmodel.Landmark, mode string) error {
+// Unexported functions
+
+func (d *DB) getUserAndComparePasswords(username, password string) (User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	posError := "could not add lanmark to database"
-	dt, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	user := User{}
+	var storedPassword string
+	query := "select * from users where username = $1"
+	row := d.SQL.QueryRowContext(ctx, query, username)
+	err := row.Scan(
+		&user.ID,
+		&user.Name,
+		&user.Username,
+		&storedPassword,
+		&user.Admin,
+		&user.LastLogin,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	)
+	if err != nil {
+		return user, err
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		return user, err
+	} else if err != nil {
+		return user, err
+	}
 
-	query1 := `
-	insert into landmarks ("name",native_name,"type",description,continent,country,
-	city,latitude,longitude,start_year,end_year,lengths,
-	width,height,wiki_url,img_url,user_id,created_at,updated_at)
-	values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+	return user, nil
+}
+
+func (d *DB) getUserByUsername(username string) (User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	u := User{}
+	query := `select id, "name",username,admin,last_login,
+	created_at,updated_at from users where username = $1`
+
+	row := d.SQL.QueryRowContext(ctx, query, username)
+	err := row.Scan(
+		&u.ID,
+		&u.Name,
+		&u.Username,
+		&u.Admin,
+		&u.LastLogin,
+		&u.CreatedAt,
+		&u.UpdatedAt,
+	)
+
+	if err != nil {
+		return u, err
+	}
+	return u, nil
+}
+
+func (d *DB) getUserPasswordByUsername(username string) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var password string
+	query := `select password from users where username = $1`
+
+	row := d.SQL.QueryRowContext(ctx, query, username)
+	err := row.Scan(&password)
+
+	if err != nil {
+		return password, err
+	}
+	return password, nil
+}
+
+func (d *DB) addUserToDB(r *http.Request) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	dt, errDt := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	if errDt != nil {
+		console.AssertError(errDt)
+	}
+
+	hashPassword, err := bcrypt.GenerateFromPassword(
+		[]byte(r.PostFormValue("password")),
+		bcrypt.DefaultCost,
+	)
+	if err != nil {
+		return err
+	}
+
+	query := `insert into users
+	("name",username,password,admin,last_login,created_at,updated_at)
+	values ($1,$2,$3,$4,$5,$6,$7)
 	`
 
-	query2 := `
-	update landmarks set "name"=$1,native_name=$2,"type"=$3,description=$4,continent=$5,country=$6,
-	city=$7,latitude=$8,longitude=$9,start_year=$10,end_year=$11,lengths=$12,width=$13,height=$14,
-	wiki_url=$15,img_url=$16,updated_at=$17 where id = $18
+	_, err = d.SQL.ExecContext(
+		ctx,
+		query,
+		r.PostFormValue("name"),
+		r.PostFormValue("username"),
+		hashPassword,
+		r.PostFormValue("admin"),
+		"0001-01-01 01:00:00",
+		dt,
+		dt,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *DB) editDBUser(r *http.Request) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	dt, errDt := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	if errDt != nil {
+		console.AssertError(errDt)
+	}
+
+	hashPassword, err := bcrypt.GenerateFromPassword(
+		[]byte(r.PostFormValue("new-password")),
+		bcrypt.DefaultCost,
+	)
+	if err != nil {
+		return err
+	}
+
+	query := `update users set "name"=$1,
+	username=$2,password=$3,updated_at=$4 where username=$5`
+
+	_, err = d.SQL.ExecContext(
+		ctx,
+		query,
+		r.PostFormValue("name"),
+		r.PostFormValue("username"),
+		hashPassword,
+		dt,
+		r.PostFormValue("current-user"),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *DB) deleteUserFromDB(u User) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := "delete from users where username=$1"
+	_, err := d.SQL.ExecContext(ctx, query, u.Username)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *DB) addLandmarkToDB(r *http.Request, u User) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	dt, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+
+	query := `
+	insert into landmarks ("name",native_name,"type",description,continent,country,
+	state_city,start_year,end_year,area,height,wiki_url,img_url,user_username,created_at,updated_at)
+	values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
 	`
 
 	err := errors.New("")
 
-	if mode == "new" {
-		_, err = d.SQL.ExecContext(
-			ctx,
-			query1,
-			lm.Name,
-			lm.NativeName,
-			lm.Type,
-			lm.Description,
-			lm.Continent,
-			lm.Country,
-			lm.City,
-			lm.Latitude,
-			lm.Longitude,
-			lm.StartYear,
-			lm.EndYear,
-			lm.Length,
-			lm.Width,
-			lm.Height,
-			lm.WikiURL,
-			lm.ImgURL,
-			lm.UserID,
-			dt,
-			dt,
-		)
-	}
+	_, err = d.SQL.ExecContext(
+		ctx,
+		query,
+		r.PostFormValue("name"),
+		r.PostFormValue("native-name"),
+		r.PostFormValue("type"),
+		r.PostFormValue("description"),
+		r.PostFormValue("continent"),
+		r.PostFormValue("country"),
+		r.PostFormValue("state-city"),
+		r.PostFormValue("start-year"),
+		r.PostFormValue("end-year"),
+		r.PostFormValue("area"),
+		r.PostFormValue("height"),
+		r.PostFormValue("wiki-url"),
+		r.PostFormValue("img-url"),
+		u.Username,
+		dt,
+		dt,
+	)
 
-	if mode == "edit" {
-		_, err2 := d.SQL.ExecContext(
-			ctx,
-			query2,
-			lm.Name,
-			lm.NativeName,
-			lm.Type,
-			lm.Description,
-			lm.Continent,
-			lm.Country,
-			lm.City,
-			lm.Latitude,
-			lm.Longitude,
-			lm.StartYear,
-			lm.EndYear,
-			lm.Length,
-			lm.Width,
-			lm.Height,
-			lm.WikiURL,
-			lm.ImgURL,
-			dt,
-			lm.ID,
-		)
-		console.AssertError(err2)
-	}
-
-	if err != nil && err.Error() != "" {
-		console.AssertError(err)
-		return errors.New(posError)
-	}
-
-	return nil
-}
-
-// DeleteLandmark deletes a landmark from the database.
-func (d *DB) DeleteLandmark(id int) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-
-	posError := "could not find landmark by id"
-	lm, err := d.findLandmarkByID(id)
 	if err != nil {
-		console.AssertError(err)
-		return fmt.Errorf("%s %d", posError, id)
-	}
-	if lm.ID < 1 {
-		err = fmt.Errorf("%s %d", posError, id)
-		console.AssertError(err)
 		return err
 	}
 
-	query := "delete from landmarks where id = $1"
+	return nil
+}
 
-	_, err = d.SQL.ExecContext(ctx, query, lm.ID)
+func (d *DB) editLandmarkToDB(r *http.Request) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	dt, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+
+	query := `
+	update landmarks set "name"=$1,native_name=$2,"type"=$3,description=$4,continent=$5,country=$6,
+	state_city=$7,start_year=$8,end_year=$9,area=$10,height=$11,
+	wiki_url=$12,img_url=$13,updated_at=$14 where id=$15
+	`
+
+	err := errors.New("")
+
+	_, err = d.SQL.ExecContext(
+		ctx,
+		query,
+		r.PostFormValue("name"),
+		r.PostFormValue("native-name"),
+		r.PostFormValue("type"),
+		r.PostFormValue("description"),
+		r.PostFormValue("continent"),
+		r.PostFormValue("country"),
+		r.PostFormValue("state-city"),
+		r.PostFormValue("start-year"),
+		r.PostFormValue("end-year"),
+		r.PostFormValue("area"),
+		r.PostFormValue("height"),
+		r.PostFormValue("wiki-url"),
+		r.PostFormValue("img-url"),
+		dt,
+		r.PostFormValue("landmark-id"),
+	)
+
 	if err != nil {
-		console.AssertError(err)
-		return fmt.Errorf("could not delete from database landmark %s", lm.Name)
+		return err
 	}
 
 	return nil
 }
 
-// Non imported functions.
-
-func (d *DB) findLandmarkByID(id int) (dbmodel.Landmark, error) {
+func (d *DB) deleteLandmarkFromDB(r *http.Request) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	lm := dbmodel.Landmark{}
-	query := "select id, name from landmarks where id = $1"
-
-	row := d.SQL.QueryRowContext(ctx, query, id)
-	err := row.Scan(&lm.ID, &lm.Name)
+	query := "delete from landmarks where id=$1"
+	_, err := d.SQL.ExecContext(ctx, query, r.PostFormValue("landmark-id"))
 	if err != nil {
-		return lm, err
+		return err
 	}
 
-	return lm, nil
-}
-
-func (d *DB) findUserByID(id int) (dbmodel.User, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-
-	u := dbmodel.User{}
-	query := "select id, name from users where id = $1"
-
-	row := d.SQL.QueryRowContext(ctx, query, id)
-	err := row.Scan(&u.ID, &u.Name)
-	if err != nil {
-		return u, err
-	}
-
-	return u, nil
+	return nil
 }

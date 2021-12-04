@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ad9311/hito/internal/console"
-	"github.com/ad9311/hito/internal/dbmodel"
+
 	"github.com/ad9311/hito/internal/driverdb"
 	"github.com/alexedwards/scs/v2"
 )
@@ -22,8 +22,8 @@ type InitConfig struct {
 
 // InitData provides initial data fields that are passed on to templates.
 type InitData struct {
-	CurrentUser dbmodel.User
-	UserSlice   []dbmodel.User
+	CurrentUser driverdb.User
+	UserSlice   []driverdb.User
 	StringMap   map[string]string
 	BoolMap     map[string]bool
 	CSRFToken   string
