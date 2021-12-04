@@ -31,7 +31,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 // PostHome is the home page handler for post action.
 func PostHome(w http.ResponseWriter, r *http.Request) {
 	if isLoggedIn(r) {
-		err := config.ConnDB.AddLandmark(r, data.CurrentUser)
+		err := config.ConnDB.EditLandmark(r, data.CurrentUser)
 		console.AssertError(err)
 	} else {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)

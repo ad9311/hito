@@ -8,6 +8,7 @@ const LandmarkForm = () => {
 
   return (
     <form action="/" method="post">
+      <input type="hidden" name="landmark-id" value={selectedLm.id} />
       <input type="hidden" name="csrf_token" value={csrfToken} />
       <input
         type="hidden"

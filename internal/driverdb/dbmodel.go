@@ -281,6 +281,50 @@ func (d *DB) AddLandmark(r *http.Request, u User) error {
 	return nil
 }
 
+// EditLandmark edits an existing landmark to the database.
+func (d *DB) EditLandmark(r *http.Request, u User) error {
+	err := validateAdmin(r, u)
+	if err != nil {
+		return err
+	}
+
+	failed := fmt.Errorf("could not add landmark %s", r.PostFormValue("name"))
+	missingErr := errors.New("one or more requiered fields are missing")
+	required := []string{
+		"landmark-id",
+		"name",
+		"native-name",
+		"type",
+		"description",
+		"continent",
+		"country",
+		"city",
+		"latitude",
+		"longitude",
+		"start-year",
+		"end-year",
+		"length",
+		"width",
+		"height",
+		"wiki-url",
+		"img-url",
+	}
+
+	for _, v := range required {
+		if r.PostFormValue(v) == "" {
+			return missingErr
+		}
+	}
+
+	err = d.editLandmarkToDB(r)
+	if err != nil {
+		console.AssertError(err)
+		return failed
+	}
+
+	return nil
+}
+
 // Unexported functions
 
 func validateAdmin(r *http.Request, u User) error {

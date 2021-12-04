@@ -297,3 +297,47 @@ func (d *DB) addLandmarkToDB(r *http.Request, u User) error {
 
 	return nil
 }
+
+func (d *DB) editLandmarkToDB(r *http.Request) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	dt, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+
+	query := `
+	update landmarks set "name"=$1,native_name=$2,"type"=$3,description=$4,continent=$5,country=$6,
+	city=$7,latitude=$8,longitude=$9,start_year=$10,end_year=$11,lengths=$12,width=$13,height=$14,
+	wiki_url=$15,img_url=$16,updated_at=$17 where id=$18
+	`
+
+	err := errors.New("")
+
+	_, err = d.SQL.ExecContext(
+		ctx,
+		query,
+		r.PostFormValue("name"),
+		r.PostFormValue("native-name"),
+		r.PostFormValue("type"),
+		r.PostFormValue("description"),
+		r.PostFormValue("continent"),
+		r.PostFormValue("country"),
+		r.PostFormValue("city"),
+		r.PostFormValue("latitude"),
+		r.PostFormValue("longitude"),
+		r.PostFormValue("start-year"),
+		r.PostFormValue("end-year"),
+		r.PostFormValue("length"),
+		r.PostFormValue("width"),
+		r.PostFormValue("height"),
+		r.PostFormValue("wiki-url"),
+		r.PostFormValue("img-url"),
+		dt,
+		r.PostFormValue("landmark-id"),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
