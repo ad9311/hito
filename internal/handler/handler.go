@@ -33,13 +33,13 @@ func PostHome(w http.ResponseWriter, r *http.Request) {
 	if isLoggedIn(r) {
 		switch r.PostFormValue("_method") {
 		case "post":
-			w.Write([]byte("post"))
+			postModel(w, r)
 			break
 		case "patch":
-			w.Write([]byte("patch"))
+			patchModel(w, r)
 			break
 		case "delete":
-			w.Write([]byte("delete"))
+			deleteModel(w, r)
 			break
 		default:
 			w.Write([]byte("default"))
@@ -87,4 +87,67 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 func isLoggedIn(r *http.Request) bool {
 	loggedIn := config.Session.GetBool(r.Context(), "loggedIn")
 	return loggedIn
+}
+
+func postModel(w http.ResponseWriter, r *http.Request) {
+	switch r.PostFormValue("model") {
+	case "user":
+		err := config.ConnDB.CreateUser(r, data.CurrentUser)
+		if err != nil {
+			console.AssertError(err)
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		break
+	case "landmark":
+		err := config.ConnDB.AddLandmark(r, data.CurrentUser)
+		if err != nil {
+			console.AssertError(err)
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		break
+	default:
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
+}
+
+func patchModel(w http.ResponseWriter, r *http.Request) {
+	switch r.PostFormValue("model") {
+	case "user":
+		err := config.ConnDB.EditUser(r, data.CurrentUser)
+		if err != nil {
+			console.AssertError(err)
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		break
+	case "landmark":
+		err := config.ConnDB.EditLandmark(r, data.CurrentUser)
+		if err != nil {
+			console.AssertError(err)
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		break
+	default:
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
+}
+
+func deleteModel(w http.ResponseWriter, r *http.Request) {
+	switch r.PostFormValue("model") {
+	case "user":
+		err := config.ConnDB.DeleteUser(r, data.CurrentUser)
+		if err != nil {
+			console.AssertError(err)
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		break
+	case "landmark":
+		err := config.ConnDB.DeleteLandmark(r, data.CurrentUser)
+		if err != nil {
+			console.AssertError(err)
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		break
+	default:
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
 }
