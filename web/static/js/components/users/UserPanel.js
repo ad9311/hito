@@ -59,7 +59,7 @@ const UserPanel = () => {
         </div>
         <div>
           <button type="button" onClick={formEditHandle}>Edit</button>
-          <button type="button" onClick={formDeleteHandle}>Delete</button>
+          <button type="button" onClick={formDeleteHandle}>Disable</button>
         </div>
       </div>
       <div className="user-logout">
