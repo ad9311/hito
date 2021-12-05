@@ -17,11 +17,11 @@ const (
 
 // InitMessage prints the HITO logo in ASCII characters.
 func InitMessage() {
-	fmt.Print("\n/---------------\\\n")
-	fmt.Println("|@~@~@@@~@@@~@@@|")
-	fmt.Println("|@@@~~@~~~@~~@~@|")
-	fmt.Println("|@~@~@@@~~@~~@@@|")
-	fmt.Print("\\---------------/\n\n")
+	fmt.Print("\n/--------------------\\\n")
+	fmt.Println("|~0~0~~000~~000~~000~|")
+	fmt.Println("|~000~~~0~~~~0~~~0~0~|")
+	fmt.Println("|~0~0~~000~~~0~~~000~|")
+	fmt.Print("\\--------------------/\n\n")
 }
 
 // ServerInfo prints information about the server.

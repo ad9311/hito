@@ -1,9 +1,13 @@
 package app
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
+	"os"
+	"path/filepath"
 
+	"github.com/BurntSushi/toml"
 	"github.com/ad9311/hito/internal/console"
 
 	"github.com/ad9311/hito/internal/driverdb"
@@ -41,17 +45,29 @@ var Data = InitData{
 // New sets the initial values for the app
 // and returns a pointer for the config and data structs.
 func New() (*InitConfig, *InitData) {
+	loadCfg := loadConfigFile()
+
 	console.Log("Generating application configuration")
-	conn, err := driverdb.ConnectSQL("host=localhost port=5432 dbname=hito_devel user=ad9311 password=")
+
+	connStr := fmt.Sprintf(
+		"host=%s port=%s dbname=%s user=%s password=%s",
+		loadCfg.Host,
+		loadCfg.PGPort,
+		loadCfg.DBName,
+		loadCfg.User,
+		loadCfg.Password,
+	)
+
+	conn, err := driverdb.ConnectSQL(connStr)
 	console.AssertPanic(err)
 
 	tmplCache, err := Gen()
 	console.AssertPanic(err)
 
 	Config.ConnDB = conn
-	Config.PortNumber = ":3000"
-	Config.UseCache = false
-	Config.Production = false
+	Config.PortNumber = loadCfg.Port
+	Config.UseCache = loadCfg.UseCache
+	Config.Production = loadCfg.Production
 	Config.TemplateCache = tmplCache
 	Config.Session = scs.New()
 	Config.Session.Cookie.Persist = true
@@ -59,4 +75,31 @@ func New() (*InitConfig, *InitData) {
 	Config.Session.Cookie.Secure = true
 
 	return &Config, &Data
+}
+
+type loadConfig struct {
+	Host       string `toml:"host"`
+	PGPort     string `toml:"pg_port"`
+	DBName     string `toml:"dbname"`
+	User       string `toml:"user"`
+	Password   string `toml:"password"`
+	Port       string `toml:"port"`
+	UseCache   bool   `toml:"use_cache"`
+	Production bool   `toml:"production"`
+}
+
+func loadConfigFile() loadConfig {
+	configFile := "./config/config.toml"
+	console.Log(fmt.Sprintf("Reading %s", filepath.Base(configFile)))
+	rPath, err := filepath.Abs(configFile)
+	console.AssertPanic(err)
+
+	data, err := os.ReadFile(rPath)
+	console.AssertError(err)
+
+	var loadCfg loadConfig
+	_, err = toml.Decode(string(data), &loadCfg)
+	console.AssertPanic(err)
+
+	return loadCfg
 }
