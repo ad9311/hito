@@ -138,14 +138,14 @@ func deleteModel(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			console.AssertError(err)
 		}
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		Logout(w, r)
 		break
 	case "landmark":
 		err := config.ConnDB.DeleteLandmark(r, data.CurrentUser)
 		if err != nil {
 			console.AssertError(err)
 		}
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		Logout(w, r)
 		break
 	default:
 		http.Redirect(w, r, "/", http.StatusSeeOther)

@@ -1,6 +1,12 @@
 /* index.css */
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap');
 
+:root {
+  --jet: #333;
+  --powder: #F6F7F3;
+  --light-blue: #4EA3E4;
+}
+
 html {
   box-sizing: border-box;
 }
@@ -11,6 +17,8 @@ html {
 body {
   padding: 0;
   margin: 0;
+  background-color: var(--powder);
+  color: var(--jet);
   font-family: 'IBM Plex Sans', sans-serif;
 }
 
@@ -36,6 +44,21 @@ a {
   color: inherit;
 }
 
-input, textarea {
+input, textarea, button {
+  outline: none;
+  border: 0.01rem solid hsla(0, 0%, 20%, 0.25);
   font-family: 'IBM Plex Sans', sans-serif;
+  transition: all 0.35s ease-in-out;
+}
+
+input[type="button"]:hover,
+input[type="submit"]:hover,
+button:hover {
+  box-shadow: 0 0 0.05rem 0.05rem var(--light-blue);
+}
+
+
+input:focus-visible,
+textarea:focus-visible {
+  box-shadow: 0 0 0.05rem 0.05rem var(--light-blue);
 }
