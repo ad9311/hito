@@ -100,13 +100,16 @@ func (d *DB) getUserAndComparePasswords(username, password string) (User, error)
 		&user.Username,
 		&storedPassword,
 		&user.Admin,
+		&user.Disabled,
 		&user.LastLogin,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)
+
 	if err != nil {
-		return user, err
+		return User{}, err
 	}
+
 	err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
 	if err == bcrypt.ErrMismatchedHashAndPassword {
 		return user, err
@@ -122,7 +125,7 @@ func (d *DB) getUserByUsername(username string) (User, error) {
 	defer cancel()
 
 	u := User{}
-	query := `select id, "name",username,admin,last_login,
+	query := `select id,"name",username,admin,last_login,
 	created_at,updated_at from users where username = $1`
 
 	row := d.SQL.QueryRowContext(ctx, query, username)
@@ -176,8 +179,8 @@ func (d *DB) addUserToDB(r *http.Request) error {
 	}
 
 	query := `insert into users
-	("name",username,password,admin,last_login,created_at,updated_at)
-	values ($1,$2,$3,$4,$5,$6,$7)
+	("name",username,password,admin,created_at,updated_at)
+	values ($1,$2,$3,$4,$5,$6)
 	`
 
 	_, err = d.SQL.ExecContext(
@@ -187,7 +190,6 @@ func (d *DB) addUserToDB(r *http.Request) error {
 		r.PostFormValue("username"),
 		hashPassword,
 		r.PostFormValue("admin"),
-		"0001-01-01 01:00:00",
 		dt,
 		dt,
 	)
@@ -240,7 +242,7 @@ func (d *DB) deleteUserFromDB(u User) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	query := "delete from users where username=$1"
+	query := "update users set disable=true where username=$1"
 	_, err := d.SQL.ExecContext(ctx, query, u.Username)
 	if err != nil {
 		return err

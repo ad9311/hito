@@ -3,8 +3,9 @@ CREATE TABLE IF NOT EXISTS users (
 	"name" VARCHAR (20) NOT NULL,
 	username VARCHAR (20) UNIQUE NOT NULL,
 	password VARCHAR (60) NOT NULL,
-  admin BOOLEAN NOT NULL,
-	last_login TIMESTAMPTZ NOT NULL,
+  admin BOOLEAN NOT NULL DEFAULT false,
+  disabled BOOLEAN NOT NULL DEFAULT false,
+	last_login TIMESTAMPTZ NOT NULL DEFAULT '0001-01-01 01:00:00',
 	created_at TIMESTAMPTZ NOT NULL,
   updated_at TIMESTAMPTZ NOT NULL
 );
@@ -24,7 +25,10 @@ CREATE TABLE IF NOT EXISTS landmarks (
 	height NUMERIC NOT NULL,
   wiki_url TEXT NOT NULL,
 	img_url TEXT NOT NULL,
-	user_username VARCHAR(20) UNIQUE NOT NULL,
+	user_username VARCHAR(20) UNIQUE NOT NULL DEFAULT 'default',
 	created_at TIMESTAMPTZ NOT NULL,
-  updated_at TIMESTAMPTZ NOT NULL
+  updated_at TIMESTAMPTZ NOT NULL,
+  CONSTRAINT user_username_fk
+    FOREIGN KEY(user_username) 
+	    REFERENCES users(username)  ON DELETE SET DEFAULT ON UPDATE CASCADE
 );

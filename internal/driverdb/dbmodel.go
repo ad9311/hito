@@ -17,6 +17,7 @@ type User struct {
 	Name      string    `json:"name"`
 	Username  string    `json:"username"`
 	Admin     bool      `json:"admin"`
+	Disabled  bool      `json:"disabled"`
 	LastLogin time.Time `json:"lastLogin"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
@@ -72,6 +73,10 @@ func (d *DB) ValidateLogin(r *http.Request) (User, error) {
 	if err != nil {
 		console.AssertError(err)
 		return u, fmt.Errorf("invalid username or password")
+	}
+
+	if u.Disabled {
+		return u, fmt.Errorf("user %s is disabled. Cannot login", u.Username)
 	}
 
 	return u, nil
