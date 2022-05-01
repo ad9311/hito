@@ -10,7 +10,7 @@ VALUES (
 	'Default User',
 	'default',
 	'$2a$10$DdD4UVzhZRmLl3OXC8ZkvufWyWVk8qVkXR9AppKxbEBc.em.4/cY.',
-	'false',
+	'true',
 	'2021-12-04 19:39:00',
 	'2021-12-04 19:39:00'
 );

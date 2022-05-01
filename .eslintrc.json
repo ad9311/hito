@@ -1,7 +1,7 @@
 {
   "settings": {
     "react": {
-      "pragma": "React",
+        "pragma": "React",
       "fragment": "Fragment",
       "version": "detect"
     }

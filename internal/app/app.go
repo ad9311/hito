@@ -65,7 +65,7 @@ func New() (*InitConfig, *InitData) {
 	console.AssertPanic(err)
 
 	Config.ConnDB = conn
-	Config.PortNumber = loadCfg.Port
+	Config.PortNumber = loadCfg.ServerPort
 	Config.UseCache = loadCfg.UseCache
 	Config.Production = loadCfg.Production
 	Config.TemplateCache = tmplCache
@@ -83,7 +83,7 @@ type loadConfig struct {
 	DBName     string `toml:"dbname"`
 	User       string `toml:"user"`
 	Password   string `toml:"password"`
-	Port       string `toml:"port"`
+	ServerPort string `toml:"server_port"`
 	UseCache   bool   `toml:"use_cache"`
 	Production bool   `toml:"production"`
 }

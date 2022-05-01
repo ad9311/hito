@@ -3,6 +3,6 @@ pg_port = "3000"
 dbname = "databae_name"
 user = "my_psql_user"
 password = "my_psql_password"
-port = ":3000"
+port = ":3000" # Must begin with a colon.
 use_cache = false # Set to true to enable file caching.
 production = false # Set to true if in production mode.
