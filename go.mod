@@ -15,7 +15,7 @@ require (
 )
 
 require (
-	github.com/BurntSushi/toml v0.4.1 // direct
+	github.com/BurntSushi/toml v1.1.0 // direct
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
